@@ -86,11 +86,13 @@ select,input[type=number],textarea{font-family:inherit;font-size:0.9rem;padding:
 .btn-ghost:hover{background:var(--surface-soft);}
 @media(max-width:700px){
   .btn{font-size:0.72rem;padding:0.45rem 0.5rem;}
-  .picker-row-top .btn, .picker-row-bottom .btn, .export-actions .btn{padding:0.7rem 0.5rem;}
+  .picker-row-bottom .btn, .export-actions .btn{padding:0.7rem 0.5rem;}
+  .picker-row-top .btn{padding:0.65rem 0.25rem;font-size:0.6rem;letter-spacing:-0.2px;}
 }
 @media(max-width:400px){
   .btn{font-size:0.64rem;padding:0.4rem 0.35rem;}
-  .picker-row-top .btn, .picker-row-bottom .btn, .export-actions .btn{padding:0.62rem 0.35rem;}
+  .picker-row-bottom .btn, .export-actions .btn{padding:0.62rem 0.35rem;}
+  .picker-row-top .btn{padding:0.58rem 0.15rem;font-size:0.52rem;}
 }
 
 .table-scroll{overflow-x:auto;}
@@ -211,7 +213,7 @@ body.print-mode .comment-block + .comment-block{margin-top:0.8rem;}
 body.print-mode .comment-block textarea{min-height:2.6rem;font-size:0.82rem;border:none;padding:0;resize:none;color:var(--body-strong);}
 body.print-mode .comment-label{font-size:0.68rem;font-weight:700;letter-spacing:0.6px;margin-bottom:0.35rem;color:var(--brand-orange);}
 
-body.print-mode .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:center;margin-top:1rem;padding-top:0.6rem;border-top:1px solid var(--hairline-soft);}
+body.print-mode .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:left;margin-top:1rem;padding-top:0.6rem;border-top:1px solid var(--hairline-soft);}
 </style>
 </head>
 <body>
@@ -304,7 +306,9 @@ body.print-mode .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:
   </div>
 </footer>
 
-<p class="disclaimer print-only" style="text-align:center;">본 자료의 추천 비중 및 구성 코멘트는 예시 자료이며 특정 상품에 대한 투자 권유 또는 투자자문이 아닙니다. 실제 배분은 고객의 투자목적, 재무상황, 위험감수능력을 종합적으로 고려하여 담당 프라이빗뱅커(PB)와 상담 후 결정하시기 바랍니다. 과거 수익률은 미래 수익을 보장하지 않으며, 투자원금 손실이 발생할 수 있습니다.</p>
+<div class="wrap print-only">
+  <p class="disclaimer" style="text-align:left;">본 자료의 추천 비중 및 구성 코멘트는 예시 자료이며 특정 상품에 대한 투자 권유 또는 투자자문이 아닙니다. 실제 배분은 고객의 투자목적, 재무상황, 위험감수능력을 종합적으로 고려하여 담당 프라이빗뱅커(PB)와 상담 후 결정하시기 바랍니다. 과거 수익률은 미래 수익을 보장하지 않으며, 투자원금 손실이 발생할 수 있습니다.</p>
+</div>
 </div>
 
 <div class="modal-backdrop" id="general-modal">
