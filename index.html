@@ -94,6 +94,10 @@ table.port-table{width:100%;border-collapse:collapse;font-size:0.88rem;min-width
 table.port-table th{background:var(--sky-soft);color:var(--navy-deep);font-weight:700;text-align:left;padding:0.6rem 0.7rem;border:1px solid var(--hairline);white-space:nowrap;}
 table.port-table td{padding:0.55rem 0.7rem;border:1px solid var(--hairline-soft);vertical-align:middle;}
 table.port-table tr:hover td{background:var(--surface-subtle);}
+.drag-handle{cursor:grab;color:var(--muted-soft);font-size:1.15rem;display:inline-block;padding:0.2rem 0.3rem;touch-action:none;user-select:none;-webkit-user-select:none;}
+.drag-handle:active{cursor:grabbing;color:var(--navy);}
+tr.dragging{opacity:0.5;background:var(--surface-soft) !important;}
+tr.dragging td{background:var(--surface-soft) !important;}
 .weight-cell{display:flex;align-items:center;gap:0.4rem;}
 .weight-cell input[type=number]{width:4.4rem;text-align:right;font-variant-numeric:tabular-nums;}
 .remove-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.15rem;line-height:1;padding:0.1rem 0.4rem;}
@@ -111,6 +115,12 @@ table.port-table tr:hover td{background:var(--surface-subtle);}
 .comment-block{padding:1.2rem 1.3rem;}
 .comment-block + .comment-block{border-top:1px solid var(--hairline-soft);}
 .comment-label{font-size:0.78rem;font-weight:700;color:var(--gold);letter-spacing:0.4px;text-transform:uppercase;margin-bottom:0.5rem;}
+.comment-label-row{display:flex;justify-content:space-between;align-items:center;gap:0.6rem;}
+.comment-label-row .comment-label{margin-bottom:0;}
+.comment-toggle-btn{font-family:inherit;font-size:0.72rem;font-weight:600;padding:0.28rem 0.65rem;border-radius:3px;border:1px solid var(--hairline);background:#fff;color:var(--muted);cursor:pointer;white-space:nowrap;}
+.comment-toggle-btn:hover{background:var(--surface-soft);}
+.comment-toggle-btn.active{background:var(--brand-orange);color:#fff;border-color:var(--brand-orange);}
+.comment-block.excluded{opacity:0.45;}
 .comment-block textarea{width:100%;min-height:5.2rem;border:1px solid var(--hairline);border-radius:4px;padding:0.7rem;font-size:0.9rem;line-height:1.6;color:var(--body);resize:vertical;}
 .comment-block textarea:focus{outline:2px solid var(--sky);border-color:var(--navy);}
 .comment-meta{font-size:0.76rem;color:var(--muted-soft);margin-top:0.5rem;}
@@ -192,6 +202,7 @@ body.print-mode .weight-cell span{color:var(--brand-orange);font-weight:700;}
 /* Comment cards: premium note style */
 body.print-mode .comment-box{margin-top:1.3rem;border:none;box-shadow:none;}
 body.print-mode .comment-block{padding:0.7rem 0 0.7rem 0.9rem;border-left:3px solid var(--brand-orange);border-top:none !important;}
+body.print-mode .comment-block.excluded{display:none !important;}
 body.print-mode .comment-block + .comment-block{margin-top:0.8rem;}
 body.print-mode .comment-block textarea{min-height:2.6rem;font-size:0.82rem;border:none;padding:0;resize:none;color:var(--body-strong);}
 body.print-mode .comment-label{font-size:0.68rem;font-weight:700;letter-spacing:0.6px;margin-bottom:0.35rem;color:var(--brand-orange);}
@@ -254,7 +265,7 @@ body.print-mode .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:
     <div class="table-scroll">
       <table class="port-table" id="port-table">
         <thead>
-          <tr><th>테마</th><th>ETF명</th><th style="width:110px;">비중</th><th style="width:36px;" class="screen-only"></th></tr>
+          <tr><th style="width:28px;" class="screen-only"></th><th>테마</th><th>ETF명</th><th style="width:110px;">비중</th><th style="width:36px;" class="screen-only"></th></tr>
         </thead>
         <tbody id="port-tbody"></tbody>
       </table>
@@ -262,13 +273,19 @@ body.print-mode .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:
     <div class="empty-msg screen-only" id="empty-msg">아직 추가된 ETF가 없습니다. 위 카드를 선택하거나 직접 추가해 보세요.</div>
 
     <div class="comment-box">
-      <div class="comment-block">
-        <div class="comment-label">최근 시황</div>
+      <div class="comment-block" id="market-comment-block">
+        <div class="comment-label-row">
+          <div class="comment-label">최근 시황</div>
+          <button class="comment-toggle-btn screen-only" id="market-comment-toggle">생략</button>
+        </div>
         <textarea id="market-comment" placeholder="미팅 전 최근 시황을 간단히 입력하세요. (예: 최근 국내 전력기기·로봇 테마 강세, 미국 나스닥 금리 인하 기대 상승, 금 가격 안전자산 선호 강세 등)"></textarea>
         <div class="comment-meta screen-only">이 내용은 저장되지 않으며, 페이지를 새로고침하면 초기화됩니다.</div>
       </div>
-      <div class="comment-block">
-        <div class="comment-label">포트폴리오 구성 코멘트</div>
+      <div class="comment-block" id="rationale-comment-block">
+        <div class="comment-label-row">
+          <div class="comment-label">포트폴리오 구성 코멘트</div>
+          <button class="comment-toggle-btn screen-only" id="rationale-comment-toggle">생략</button>
+        </div>
         <textarea id="rationale-comment" placeholder="이 포트폴리오를 이렇게 구성한 이유를 직접 입력하세요. (예: 채권·금 비중을 높여 변동성 방어에 무게를 둔 배분입니다 등)"></textarea>
         <div class="comment-meta screen-only">이 내용은 저장되지 않으며, 페이지를 새로고침하면 초기화됩니다.</div>
       </div>
@@ -596,7 +613,9 @@ function renderPortfolio(){
 
   portfolio.forEach((row,idx)=>{
     const tr = document.createElement('tr');
+    tr.dataset.rowIdx = idx;
     tr.innerHTML = `
+      <td class="screen-only"><span class="drag-handle" data-idx="${idx}">&#9776;</span></td>
       <td>${row.th}</td>
       <td>${row.n}${row.t?` <span class="ticker-tag">${row.t}</span>`:''}</td>
       <td>
@@ -625,6 +644,41 @@ function renderPortfolio(){
 
   updateTotals();
 }
+
+/* ---------- Drag-to-reorder (pointer-based, touch + mouse) ---------- */
+let dragState = null;
+document.getElementById('port-tbody').addEventListener('pointerdown', (e)=>{
+  const handle = e.target.closest('.drag-handle');
+  if(!handle) return;
+  const tr = handle.closest('tr');
+  dragState = { idx: +tr.dataset.rowIdx };
+  tr.classList.add('dragging');
+  document.addEventListener('pointermove', onDragMove);
+  document.addEventListener('pointerup', onDragEnd, {once:true});
+  document.addEventListener('pointercancel', onDragEnd, {once:true});
+});
+function onDragMove(e){
+  if(!dragState) return;
+  e.preventDefault();
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  const tr = el && el.closest('tr[data-row-idx]');
+  if(!tr) return;
+  const overIdx = +tr.dataset.rowIdx;
+  if(overIdx !== dragState.idx){
+    const [moved] = portfolio.splice(dragState.idx, 1);
+    portfolio.splice(overIdx, 0, moved);
+    dragState.idx = overIdx;
+    renderPortfolio();
+    const newRow = document.querySelector(`tr[data-row-idx="${overIdx}"]`);
+    if(newRow) newRow.classList.add('dragging');
+  }
+}
+function onDragEnd(){
+  document.removeEventListener('pointermove', onDragMove);
+  document.querySelectorAll('tr.dragging').forEach(tr=>tr.classList.remove('dragging'));
+  dragState = null;
+}
+
 function updateTotals(){
   const total = portfolio.reduce((s,p)=>s+(p.w||0),0);
   const bar = document.getElementById('total-bar');
@@ -632,6 +686,19 @@ function updateTotals(){
   bar.classList.toggle('total-ok', total===100);
   bar.classList.toggle('total-warn', total!==100);
 }
+
+/* ---------- Comment section: include/exclude from PDF & image output ---------- */
+function setupCommentToggle(toggleId, blockId){
+  const btn = document.getElementById(toggleId);
+  const block = document.getElementById(blockId);
+  btn.addEventListener('click', ()=>{
+    const isExcluded = block.classList.toggle('excluded');
+    btn.textContent = isExcluded ? '포함하기' : '생략';
+    btn.classList.toggle('active', isExcluded);
+  });
+}
+setupCommentToggle('market-comment-toggle', 'market-comment-block');
+setupCommentToggle('rationale-comment-toggle', 'rationale-comment-block');
 
 /* ---------- Customer name (screen input -> print masthead title) ---------- */
 const customerNameEl = document.getElementById('customer-name');
