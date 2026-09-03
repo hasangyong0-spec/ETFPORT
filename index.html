@@ -115,6 +115,10 @@ table.port-table tr:hover td{background:var(--surface-subtle);}
 .modal-head h3{font-size:1.15rem;font-weight:700;color:var(--navy-deep);margin:0;}
 .modal-close{background:none;border:none;font-size:1.4rem;line-height:1;cursor:pointer;color:var(--muted);}
 .modal-close:hover{color:var(--ink);}
+.modal-form{display:flex;flex-direction:column;gap:0.9rem;}
+.modal-label{font-size:0.85rem;font-weight:600;color:var(--navy-deep);display:flex;flex-direction:column;gap:0.35rem;}
+.modal-input{font-family:inherit;font-size:0.92rem;font-weight:400;padding:0.55rem 0.65rem;border:1px solid var(--hairline);border-radius:4px;background:#fff;color:var(--ink);}
+.modal-input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 2px rgba(4,59,114,0.12);}
 .modal-table-wrap{max-height:65vh;overflow-y:auto;overflow-x:auto;border:1px solid var(--hairline);border-radius:4px;}
 table.full-list{width:100%;border-collapse:collapse;font-size:0.85rem;table-layout:fixed;}
 table.full-list th{position:sticky;top:0;background:var(--sky-soft);color:var(--navy-deep);padding:0.55rem 0.5rem;text-align:left;border-bottom:1px solid var(--hairline);}
@@ -249,6 +253,26 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
 </footer>
 
 <p class="disclaimer print-only" style="text-align:center;">본 자료는 예시이며 투자 권유·자문이 아닙니다. 투자원금 손실이 발생할 수 있습니다.</p>
+
+<div class="modal-backdrop" id="general-modal">
+  <div class="modal-box" style="max-width:420px;">
+    <div class="modal-head">
+      <h3>일반ETF 추가</h3>
+      <button class="modal-close" id="close-general-btn">&times;</button>
+    </div>
+    <div class="modal-form">
+      <label class="modal-label">테마
+        <input type="text" id="general-theme-input" class="modal-input" placeholder="예: 배당, 채권, 리츠 등">
+      </label>
+      <label class="modal-label">ETF명
+        <input type="text" id="general-name-input" class="modal-input" placeholder="ETF명을 입력하세요">
+      </label>
+    </div>
+    <div style="margin-top:1.2rem;text-align:right;">
+      <button class="btn btn-primary" id="general-confirm-btn">추가</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal-backdrop" id="list-modal">
   <div class="modal-box">
@@ -388,15 +412,38 @@ function loadPreset(key){
 /* ---------- Theme/ETF pickers (now via modal) ---------- */
 document.getElementById('add-btn').onclick = ()=>openModal('add');
 document.getElementById('add-general-btn').onclick = ()=>{
-  const theme = window.prompt('테마를 입력하세요. (예: 배당, 채권, 리츠 등)');
-  if(theme===null || !theme.trim()) return;
-  const name = window.prompt('ETF명을 입력하세요.');
-  if(name===null || !name.trim()) return;
+  document.getElementById('general-theme-input').value = '';
+  document.getElementById('general-name-input').value = '';
+  document.getElementById('general-modal').classList.add('open');
+  document.getElementById('general-theme-input').focus();
+};
+function closeGeneralModal(){
+  document.getElementById('general-modal').classList.remove('open');
+}
+function confirmGeneralAdd(){
+  const theme = document.getElementById('general-theme-input').value.trim();
+  const name = document.getElementById('general-name-input').value.trim();
+  if(!theme || !name){
+    alert('테마와 ETF명을 모두 입력해주세요.');
+    return;
+  }
   activePreset = null;
   renderRiskCards();
-  portfolio.push({t:'', n:name.trim(), th:theme.trim(), a:'other', w:null});
+  portfolio.push({t:'', n:name, th:theme, a:'other', w:null});
   renderPortfolio();
+  closeGeneralModal();
+}
+document.getElementById('close-general-btn').onclick = closeGeneralModal;
+document.getElementById('general-confirm-btn').onclick = confirmGeneralAdd;
+document.getElementById('general-modal').onclick = (e)=>{
+  if(e.target.id==='general-modal') closeGeneralModal();
 };
+document.getElementById('general-theme-input').addEventListener('keydown', (e)=>{
+  if(e.key==='Enter'){ document.getElementById('general-name-input').focus(); }
+});
+document.getElementById('general-name-input').addEventListener('keydown', (e)=>{
+  if(e.key==='Enter'){ confirmGeneralAdd(); }
+});
 document.getElementById('clear-btn').onclick = ()=>{
   portfolio = []; activePreset = null;
   renderRiskCards(); renderPortfolio();
