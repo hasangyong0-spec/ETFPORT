@@ -162,10 +162,10 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
   @page{ margin:14mm 13mm; }
   *{box-shadow:none !important;}
   body{font-size:11px;line-height:1.45;color:var(--body-strong);}
-  header.mast{background:var(--brand-orange) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding-bottom:0.6rem;}
-  .mast-inner{padding:0.7rem 0;gap:0.3rem;align-items:flex-start;}
+  header.mast{background:none !important;padding-bottom:0;}
+  .mast-inner{background:var(--brand-orange) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:0.9rem 2rem !important;gap:0.35rem;align-items:flex-start;}
   .mast-line1,.mast-line2,.menu-btn{display:none !important;}
-  .print-mast-company{display:block;font-size:0.78rem;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.88);}
+  .print-mast-company{display:block;font-size:1.02rem;font-weight:600;letter-spacing:0.4px;color:rgba(255,255,255,0.92);}
   .print-mast-title{display:block;font-size:2rem;font-weight:700;letter-spacing:0.1px;color:#fff;line-height:1.28;}
   .section{padding:0;}
   .section-rule{display:none;}
@@ -202,7 +202,7 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
     <div class="mast-line2">ETF포트폴리오<span class="mt-small">(개인연금,IRP,ISA)</span></div>
     <button class="menu-btn" id="open-list-btn">자산배분 ETF 리스트 전체보기</button>
     <div class="print-mast-company print-only">미래에셋증권 투자센터대구WM</div>
-    <div class="print-mast-title print-only" id="print-mast-title">고객님을 위한 ETF포트폴리오(개인연금,IRP,ISA)</div>
+    <div class="print-mast-title print-only" id="print-mast-title">고객님을 위한 ETF포트폴리오</div>
   </div>
 </header>
 
@@ -603,8 +603,8 @@ const printMastTitleEl = document.getElementById('print-mast-title');
 function updateCustomerName(){
   const name = customerNameEl.value.trim();
   printMastTitleEl.textContent = name
-    ? `${name}고객님을 위한 ETF포트폴리오(개인연금,IRP,ISA)`
-    : '고객님을 위한 ETF포트폴리오(개인연금,IRP,ISA)';
+    ? `${name}고객님을 위한 ETF포트폴리오`
+    : '고객님을 위한 ETF포트폴리오';
 }
 customerNameEl.addEventListener('input', updateCustomerName);
 updateCustomerName();
