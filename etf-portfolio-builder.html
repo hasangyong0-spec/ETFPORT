@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>미래에셋증권 투자센터대구 ETF포트폴리오</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+:root{
+  --navy:#043B72; --navy-deep:#03294F; --navy-active:#022238;
+  --brand-orange:#F58220;
+  --steel:#4C7EA8; --sky:#7FA8C9; --sky-soft:#DCE7F0;
+  --gold:#C9A227; --gold-soft:#EFE2B8;
+  --canvas:#FFFFFF; --surface-soft:#F2F6FA; --surface-subtle:#F8FAFC;
+  --hairline:#D7DEE5; --hairline-soft:#E7ECF1;
+  --ink:#152436; --body-strong:#26364A; --body:#3D4A5C; --muted:#697585; --muted-soft:#8B96A3;
+  --font-kr:'Noto Sans KR', sans-serif;
+  --success:#2E8540; --warning:#B8860B;
+}
+*{box-sizing:border-box;}
+html{font-size:16px;}
+@media(max-width:520px){ html{font-size:14.5px;} }
+@media(max-width:380px){ html{font-size:13.5px;} }
+body{margin:0;font-family:var(--font-kr);color:var(--body);background:var(--canvas);line-height:1.65;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 1.4rem;}
+@media(min-width:640px){.wrap{padding:0 2rem;}}
+
+/* Header */
+header.mast{background:linear-gradient(135deg,var(--navy-deep),var(--navy));border-bottom:2px solid var(--gold);}
+.mast-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;column-gap:0.8rem;padding:1.3rem 0;}
+.mast-title{grid-column:2;text-align:center;font-size:1.85rem;font-weight:700;color:#fff;letter-spacing:0.2px;line-height:1.35;}
+.mt-orange{color:var(--brand-orange);font-size:1.18em;}
+.mt-sub{display:inline;}
+.mt-small{font-size:0.6em;font-weight:600;opacity:0.88;margin-left:0.1em;}
+@media(max-width:560px){
+  .mast-title{font-size:1.4rem;}
+  .mt-sub{display:block;margin-top:0.3rem;}
+}
+.menu-btn{grid-column:3;justify-self:end;font-family:inherit;font-size:0.75rem;font-weight:600;padding:0.4rem 0.75rem;border-radius:3px;border:1px solid rgba(255,255,255,0.35);background:rgba(255,255,255,0.08);color:#fff;cursor:pointer;white-space:nowrap;}
+.menu-btn:hover{background:rgba(255,255,255,0.18);}
+
+/* Section */
+.section{padding:2.2rem 0;}
+.section-rule{height:2px;background:var(--navy);margin-bottom:1.1rem;}
+.section-title{font-size:1.35rem;font-weight:700;color:var(--ink);margin:0 0 0.35rem 0;}
+.section-sub{font-size:0.92rem;color:var(--muted);margin:0 0 1.6rem 0;}
+
+/* Risk cards */
+.risk-grid{display:flex;gap:0.7rem;}
+@media(max-width:700px){
+  .risk-grid{overflow-x:auto;padding-bottom:0.4rem;-webkit-overflow-scrolling:touch;}
+  .risk-card{min-width:9.5rem;}
+}
+.risk-card{border:1px solid var(--hairline);border-radius:6px;padding:1.2rem;background:#fff;cursor:pointer;text-align:left;transition:.15s;flex:1 1 0;}
+.risk-card:hover{border-color:var(--navy);box-shadow:0 3px 12px rgba(4,59,114,0.08);}
+.risk-card.active{border-color:var(--navy);background:var(--surface-soft);box-shadow:inset 0 0 0 1.5px var(--navy);}
+.risk-card .rname{font-size:1.08rem;font-weight:700;color:var(--navy-deep);margin-bottom:0.3rem;}
+.risk-card .rdesc{font-size:0.85rem;color:var(--muted);line-height:1.55;}
+
+/* Builder */
+.builder-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:1.8rem;align-items:start;}
+@media(max-width:900px){.builder-grid{grid-template-columns:1fr;}}
+.picker-box{border:1px solid var(--hairline);border-radius:6px;padding:1.15rem;background:var(--surface-subtle);margin-bottom:1.15rem;}
+.picker-row{display:flex;gap:0.6rem;flex-wrap:wrap;}
+select,input[type=number],textarea{font-family:inherit;font-size:0.9rem;padding:0.55rem 0.6rem;border:1px solid var(--hairline);border-radius:3px;background:#fff;color:var(--ink);}
+select{flex:1;min-width:170px;}
+.btn{font-family:inherit;font-size:0.9rem;font-weight:600;padding:0.55rem 1.1rem;border-radius:3px;border:none;cursor:pointer;}
+.btn-primary{background:var(--navy);color:#fff;}
+.btn-primary:hover{background:var(--navy-active);}
+.btn-ghost{background:#fff;border:1px solid var(--hairline);color:var(--body);}
+.btn-ghost:hover{background:var(--surface-soft);}
+
+.table-scroll{overflow-x:auto;}
+table.port-table{width:100%;border-collapse:collapse;font-size:0.88rem;min-width:480px;}
+table.port-table th{background:var(--sky-soft);color:var(--navy-deep);font-weight:700;text-align:left;padding:0.6rem 0.7rem;border:1px solid var(--hairline);white-space:nowrap;}
+table.port-table td{padding:0.55rem 0.7rem;border:1px solid var(--hairline-soft);vertical-align:middle;}
+table.port-table tr:hover td{background:var(--surface-subtle);}
+.weight-cell{display:flex;align-items:center;gap:0.5rem;min-width:150px;}
+.weight-cell input[type=range]{flex:1;accent-color:var(--navy);}
+.weight-cell input[type=number]{width:3.6rem;text-align:right;font-variant-numeric:tabular-nums;}
+.remove-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.15rem;line-height:1;padding:0.1rem 0.4rem;}
+.remove-btn:hover{color:#C62828;}
+.ticker-tag{font-size:0.75rem;color:var(--muted);font-variant-numeric:tabular-nums;}
+
+.total-bar{display:flex;justify-content:space-between;align-items:center;padding:0.85rem 1rem;border-radius:5px;margin-bottom:0.9rem;font-weight:700;font-size:0.98rem;}
+.total-ok{background:#EAF4EC;color:var(--success);}
+.total-warn{background:#FBF1DD;color:var(--warning);}
+
+.summary-box{border:1px solid var(--hairline);border-radius:6px;padding:1.2rem;background:#fff;}
+.summary-box h3{font-size:1.02rem;font-weight:700;margin:0 0 1rem 0;color:var(--navy-deep);}
+.legend-row{display:flex;justify-content:space-between;font-size:0.86rem;padding:0.4rem 0;border-bottom:1px solid var(--hairline-soft);}
+.legend-row .dot{display:inline-block;width:0.6rem;height:0.6rem;border-radius:2px;margin-right:0.5rem;vertical-align:middle;}
+.legend-row .val{font-variant-numeric:tabular-nums;font-weight:600;}
+
+.empty-msg{color:var(--muted-soft);font-size:0.92rem;padding:1.6rem 0;text-align:center;}
+
+/* Comment section */
+.comment-box{border:1px solid var(--hairline);border-radius:6px;background:#fff;overflow:hidden;margin-top:1.5rem;}
+.comment-block{padding:1.2rem 1.3rem;}
+.comment-block + .comment-block{border-top:1px solid var(--hairline-soft);}
+.comment-label{font-size:0.78rem;font-weight:700;color:var(--gold);letter-spacing:0.4px;text-transform:uppercase;margin-bottom:0.5rem;}
+.comment-block textarea{width:100%;min-height:5.2rem;border:1px solid var(--hairline);border-radius:4px;padding:0.7rem;font-size:0.9rem;line-height:1.6;color:var(--body);resize:vertical;}
+.comment-block textarea:focus{outline:2px solid var(--sky);border-color:var(--navy);}
+.rationale-text{font-size:0.92rem;line-height:1.75;color:var(--body-strong);}
+.comment-meta{font-size:0.76rem;color:var(--muted-soft);margin-top:0.5rem;}
+
+/* Modal */
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(3,15,30,0.55);z-index:50;align-items:flex-start;justify-content:center;padding:3rem 1rem;overflow-y:auto;}
+.modal-backdrop.open{display:flex;}
+.modal-box{background:#fff;border-radius:8px;max-width:760px;width:100%;padding:1.6rem;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+.modal-head h3{font-size:1.15rem;font-weight:700;color:var(--navy-deep);margin:0;}
+.modal-close{background:none;border:none;font-size:1.4rem;line-height:1;cursor:pointer;color:var(--muted);}
+.modal-close:hover{color:var(--ink);}
+.modal-table-wrap{max-height:65vh;overflow-y:auto;border:1px solid var(--hairline);border-radius:4px;}
+table.full-list{width:100%;border-collapse:collapse;font-size:0.85rem;}
+table.full-list th{position:sticky;top:0;background:var(--sky-soft);color:var(--navy-deep);padding:0.55rem 0.7rem;text-align:left;border-bottom:1px solid var(--hairline);}
+table.full-list td{padding:0.5rem 0.7rem;border-bottom:1px solid var(--hairline-soft);}
+table.full-list tr:hover td{background:var(--surface-subtle);}
+.group-header-row td{background:var(--navy);color:#fff;font-weight:700;padding:0.5rem 0.7rem;}
+.group-header-row:hover td{background:var(--navy);}
+tr.pickable{cursor:pointer;}
+tr.pickable:hover td{background:var(--sky-soft);}
+tr.picked td{background:#EAF4EC !important;color:var(--muted);}
+.picked-tag{font-size:0.72rem;color:var(--success);font-weight:700;margin-left:0.4rem;}
+
+footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
+.disclaimer{font-size:0.72rem;color:var(--muted-soft);line-height:1.65;}
+
+@media print{ .menu-btn,.picker-box,#print-btn,.modal-backdrop{display:none !important;} }
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap mast-inner">
+    <div class="mast-title"><span class="mt-orange">미래에셋증권 투자센터대구WM</span><span class="mt-sub"> ETF포트폴리오<span class="mt-small">(연금,IRP,ISA)</span></span></div>
+    <button class="menu-btn" id="open-list-btn">자산배분 ETF 리스트</button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section">
+    <div class="section-rule"></div>
+    <h2 class="section-title">위험성향별 추천 포트폴리오</h2>
+    <p class="section-sub">고객 성향에 맞는 카드를 선택하면 아래 빌더에 추천 비중이 자동으로 채워집니다. 이후 자유롭게 종목·비중을 수정할 수 있습니다.</p>
+    <div class="risk-grid" id="risk-grid"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-rule"></div>
+    <h2 class="section-title">포트폴리오 만들기</h2>
+    <p class="section-sub">'ETF 추가' 버튼을 눌러 자산배분 ETF 리스트에서 종목을 선택하고, 슬라이더로 비중을 조절하세요.</p>
+
+    <div class="picker-box">
+      <div class="picker-row">
+        <button class="btn btn-primary" id="add-btn">+ ETF 추가</button>
+        <button class="btn btn-ghost" id="clear-btn">전체 삭제</button>
+        <button class="btn btn-ghost" id="print-btn">인쇄 / PDF 저장</button>
+      </div>
+    </div>
+
+    <div class="builder-grid">
+      <div>
+        <div class="total-bar" id="total-bar">
+          <span>합계 비중</span>
+          <span id="total-val">0%</span>
+        </div>
+        <div class="table-scroll">
+          <table class="port-table" id="port-table">
+            <thead>
+              <tr><th>테마</th><th>ETF명</th><th style="width:190px;">비중</th><th style="width:36px;"></th></tr>
+            </thead>
+            <tbody id="port-tbody"></tbody>
+          </table>
+        </div>
+        <div class="empty-msg" id="empty-msg">아직 추가된 ETF가 없습니다. 위 카드를 선택하거나 직접 추가해 보세요.</div>
+      </div>
+
+      <div class="summary-box">
+        <h3>자산군별 비중</h3>
+        <canvas id="donut-chart" height="220"></canvas>
+        <div id="legend-list" style="margin-top:1rem;"></div>
+      </div>
+    </div>
+
+    <div class="comment-box">
+      <div class="comment-block">
+        <div class="comment-label">최근 시황</div>
+        <textarea id="market-comment" placeholder="미팅 전 최근 시황을 간단히 입력하세요. (예: 최근 국내 전력기기·로봇 테마 강세, 미국 나스닥 금리 인하 기대 상승, 금 가격 안전자산 선호 강세 등)"></textarea>
+        <div class="comment-meta">이 내용은 브라우저에 자동 저장되며, 미팅 전 자유롭게 수정할 수 있습니다.</div>
+      </div>
+      <div class="comment-block">
+        <div class="comment-label">포트폴리오 구성 코멘트</div>
+        <div class="rationale-text" id="rationale-text">포트폴리오를 구성하면 이 종목·비중을 선택한 이유가 여기에 자동으로 표시됩니다.</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="disclaimer">본 화면의 추천 비중 및 구성 코멘트는 예시 자료이며 특정 상품에 대한 투자 권유 또는 투자자문이 아닙니다. 실제 배분은 고객의 투자목적, 재무상황, 위험감수능력을 종합적으로 고려하여 담당 프라이빗뱅커(PB)와 상담 후 결정하시기 바랍니다. 과거 수익률은 미래 수익을 보장하지 않으며, 투자원금 손실이 발생할 수 있습니다.</p>
+  </div>
+</footer>
+
+<div class="modal-backdrop" id="list-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modal-title">자산배분 ETF 리스트</h3>
+      <button class="modal-close" id="close-list-btn">&times;</button>
+    </div>
+    <p id="modal-sub" style="font-size:0.78rem;color:var(--muted-soft);margin:-0.6rem 0 1rem 0;">자료: 자산배분 ETF 리스트(사내한, 2026.09.03 기준) · 국내상장 ETF 60종목 — 홍콩상장 등 해외상장 종목은 별도 자료 확인 시 추가 반영됩니다.</p>
+    <div class="modal-table-wrap">
+      <table class="full-list">
+        <thead><tr><th style="width:2.6rem;">No.</th><th>테마</th><th>Ticker</th><th>ETF명</th></tr></thead>
+        <tbody id="full-list-tbody"></tbody>
+      </table>
+    </div>
+    <div id="modal-footer" style="display:none;margin-top:1rem;text-align:right;">
+      <button class="btn btn-primary" id="modal-done-btn">완료</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- Data ---------- */
+const ASSET_CLASSES = {
+  dom_equity:{ko:'국내주식',color:'#043B72'},
+  global_equity:{ko:'해외주식',color:'#4C7EA8'},
+  bond:{ko:'채권',color:'#7FA8C9'},
+  alt:{ko:'대체자산(금)',color:'#C9A227'}
+};
+
+/* 구분(grp) 순서 = 사내한 "자산배분 ETF 리스트" 원문 순서: 지수/지역 → 글로벌테마 → 자산배분 → 원자재 → 국내주식형(신설) */
+const GROUPS_ORDER = ['지수/지역','글로벌테마','자산배분','원자재','국내주식형(신설)'];
+
+const ETF_LIST = [
+  // 지수/지역
+  {t:'A133690',n:'TIGER 미국나스닥100',th:'미국/글로벌',grp:'지수/지역',a:'global_equity'},
+  {t:'A360750',n:'TIGER 미국S&P500',th:'미국/글로벌',grp:'지수/지역',a:'global_equity'},
+  {t:'A448290',n:'TIGER 미국S&P500TR(H)',th:'미국/글로벌',grp:'지수/지역',a:'global_equity'},
+  {t:'A488500',n:'TIGER 미국S&P500동일가중',th:'미국/글로벌',grp:'지수/지역',a:'global_equity'},
+  {t:'A448300',n:'TIGER 미국나스닥100TR(H)',th:'미국/글로벌',grp:'지수/지역',a:'global_equity'},
+  {t:'A0060H0',n:'TIGER 글로벌토탈스탁액티브',th:'글로벌 분산투자',grp:'지수/지역',a:'global_equity'},
+  {t:'A453870',n:'TIGER 인도니프티50',th:'인도',grp:'지수/지역',a:'global_equity'},
+  {t:'A241180',n:'TIGER 일본니케이225',th:'일본',grp:'지수/지역',a:'global_equity'},
+  {t:'A465660',n:'TIGER 일본반도체FACTSET',th:'일본',grp:'지수/지역',a:'global_equity'},
+  {t:'A469160',n:'ACE 일본반도체',th:'일본',grp:'지수/지역',a:'global_equity'},
+  {t:'A192090',n:'TIGER 차이나CSI300',th:'중국',grp:'지수/지역',a:'global_equity'},
+  {t:'A0047A0',n:'TIGER 차이나테크TOP10',th:'중국',grp:'지수/지역',a:'global_equity'},
+  {t:'A0053L0',n:'TIGER 차이나휴머노이드로봇',th:'중국',grp:'지수/지역',a:'global_equity'},
+  {t:'A396520',n:'TIGER 차이나반도체FACTSET',th:'중국',grp:'지수/지역',a:'global_equity'},
+  {t:'A174360',n:'RISE 중국본토대형주CSI100',th:'중국',grp:'지수/지역',a:'global_equity'},
+  {t:'A0043Y0',n:'TIME 차이나AI테크액티브',th:'중국',grp:'지수/지역',a:'global_equity'},
+  {t:'A0133E0',n:'TIGER 차이나증권',th:'중국',grp:'지수/지역',a:'global_equity'},
+  {t:'A414780',n:'TIGER 차이나과창판STAR50(합성)',th:'중국',grp:'지수/지역',a:'global_equity'},
+  {t:'A416090',n:'ACE 중국과창판STAR50',th:'중국',grp:'지수/지역',a:'global_equity'},
+  // 글로벌테마
+  {t:'A458730',n:'TIGER 미국배당다우존스',th:'글로벌배당',grp:'글로벌테마',a:'global_equity'},
+  {t:'A452360',n:'SOL 미국배당다우존스(H)',th:'글로벌배당',grp:'글로벌테마',a:'global_equity'},
+  {t:'A490490',n:'SOL 미국배당미국채혼합50',th:'글로벌배당',grp:'글로벌테마',a:'global_equity'},
+  {t:'A381170',n:'TIGER 미국테크TOP10 INDXX',th:'빅테크',grp:'글로벌테마',a:'global_equity'},
+  {t:'A466950',n:'TIGER 글로벌AI액티브',th:'반도체&A.I.',grp:'글로벌테마',a:'global_equity'},
+  {t:'A381180',n:'TIGER 미국필라델피아반도체나스닥',th:'반도체&A.I.',grp:'글로벌테마',a:'global_equity'},
+  {t:'A469060',n:'RISE 미국반도체NYSE',th:'반도체&A.I.',grp:'글로벌테마',a:'global_equity'},
+  {t:'A442320',n:'RISE 글로벌원자력',th:'원자력&전력인프라',grp:'글로벌테마',a:'global_equity'},
+  {t:'A491010',n:'TIGER 글로벌AI전력인프라액티브',th:'원자력&전력인프라',grp:'글로벌테마',a:'global_equity'},
+  {t:'A0183J0',n:'TIGER 미국우주테크',th:'우주/방산',grp:'글로벌테마',a:'global_equity'},
+  {t:'A494840',n:'TIGER 미국방산TOP10',th:'우주/방산',grp:'글로벌테마',a:'global_equity'},
+  {t:'A0102X0',n:'ACE 유럽방산TOP10',th:'우주/방산',grp:'글로벌테마',a:'global_equity'},
+  {t:'A203780',n:'TIGER 미국나스닥바이오',th:'헬스케어&바이오텍',grp:'글로벌테마',a:'global_equity'},
+  // 자산배분 (채권/TDF)
+  {t:'A302190',n:'TIGER 중장기국채',th:'채권형',grp:'자산배분',a:'bond'},
+  {t:'A438330',n:'TIGER 우량회사채액티브',th:'채권형',grp:'자산배분',a:'bond'},
+  {t:'A458260',n:'TIGER 미국투자등급회사채액티브(H)',th:'채권형',grp:'자산배분',a:'bond'},
+  {t:'A435420',n:'TIGER 미국나스닥100TR채권혼합Fn',th:'채권혼합',grp:'자산배분',a:'bond'},
+  {t:'A438080',n:'ACE 미국S&P500채권혼합액티브',th:'채권혼합',grp:'자산배분',a:'bond'},
+  {t:'A0025N0',n:'TIGER TDF2045',th:'TDF',grp:'자산배분',a:'bond'},
+  {t:'A442570',n:'RISE TDF2050액티브',th:'TDF',grp:'자산배분',a:'bond'},
+  // 원자재
+  {t:'A0072R0',n:'TIGER KRX금현물',th:'금',grp:'원자재',a:'alt'},
+  // 국내주식형(신설)
+  {t:'A102110',n:'TIGER 200',th:'KOSPI',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A305050',n:'ACE 코스피',th:'KOSPI',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A232080',n:'TIGER 코스닥150',th:'KOSDAQ',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A316670',n:'KIWOOM 코스닥150',th:'KOSDAQ',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A292150',n:'TIGER 코리아TOP10',th:'대형주TOP10',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A411540',n:'SOL 200 Top10',th:'대형주TOP10',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A0052D0',n:'TIGER 코리아배당다우존스',th:'배당',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A496080',n:'TIGER 코리아밸류업',th:'밸류업',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A495330',n:'1Q 코리아밸류업',th:'밸류업',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A396500',n:'TIGER 반도체TOP10',th:'반도체/IT',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A0093A0',n:'RISE AI반도체TOP10',th:'반도체/IT',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A471780',n:'TIGER 코리아테크액티브',th:'반도체/IT',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A0117V0',n:'TIGER 코리아AI전력기기TOP3플러스',th:'전력',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A0101N0',n:'RISE AI전력인프라',th:'전력',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A494670',n:'TIGER 조선TOP10',th:'조선',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A0141S0',n:'SOL 조선기자재',th:'조선',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A307520',n:'TIGER 지주회사',th:'지주',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A0148J0',n:'TIGER 코리아휴머노이드로봇산업',th:'K-로봇',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A469070',n:'RISE AI&로봇',th:'K-로봇',grp:'국내주식형(신설)',a:'dom_equity'},
+  {t:'A463250',n:'TIGER K방산&우주',th:'K-우주방산',grp:'국내주식형(신설)',a:'dom_equity'}
+];
+
+const PRESETS = {
+  conservative:{
+    ko:'안정추구형', desc_ko:'채권·금·배당 중심, 낮은 변동성을 선호하는 고객용',
+    items:[['A302190',25],['A438330',20],['A458260',15],['A0072R0',15],['A0052D0',10],['A458730',10],['A102110',5]]
+  },
+  moderate:{
+    ko:'위험중립형', desc_ko:'국내·해외 주식과 채권을 균형 배분',
+    items:[['A360750',20],['A133690',15],['A292150',10],['A302190',15],['A438330',10],['A0072R0',10],['A458730',10],['A396500',10]]
+  },
+  aggressive:{
+    ko:'적극투자형', desc_ko:'AI·반도체·로봇 등 성장 테마 비중 확대',
+    items:[['A133690',20],['A381180',15],['A0117V0',10],['A0148J0',10],['A466950',10],['A396500',10],['A0053L0',10],['A453870',10],['A0072R0',5]]
+  }
+};
+
+/* ---------- State ---------- */
+let activePreset = null;
+let portfolio = [];
+const etfByTicker = Object.fromEntries(ETF_LIST.map(e=>[e.t,e]));
+let donutChart = null;
+
+/* ---------- Risk cards ---------- */
+function renderRiskCards(){
+  const grid = document.getElementById('risk-grid');
+  grid.innerHTML='';
+  Object.entries(PRESETS).forEach(([key,p])=>{
+    const card = document.createElement('div');
+    card.className = 'risk-card' + (activePreset===key ? ' active' : '');
+    card.innerHTML = `<div class="rname">${p.ko}</div><div class="rdesc">${p.desc_ko}</div>`;
+    card.onclick = ()=>loadPreset(key);
+    grid.appendChild(card);
+  });
+}
+function loadPreset(key){
+  activePreset = key;
+  const p = PRESETS[key];
+  portfolio = p.items.map(([ticker,w])=>{
+    const e = etfByTicker[ticker];
+    return {t:e.t,n:e.n,th:e.th,a:e.a,w:w};
+  });
+  renderRiskCards();
+  renderPortfolio();
+}
+
+/* ---------- Theme/ETF pickers (now via modal) ---------- */
+document.getElementById('add-btn').onclick = ()=>openModal('add');
+document.getElementById('clear-btn').onclick = ()=>{
+  portfolio = []; activePreset = null;
+  renderRiskCards(); renderPortfolio();
+};
+document.getElementById('print-btn').onclick = ()=>window.print();
+
+/* ---------- List modal (view mode from header / add mode from builder) ---------- */
+let modalMode = 'view';
+function openModal(mode){
+  modalMode = mode;
+  document.getElementById('modal-title').textContent = mode==='add' ? 'ETF 추가하기' : '자산배분 ETF 리스트';
+  document.getElementById('modal-sub').style.display = mode==='add' ? 'none' : '';
+  document.getElementById('modal-footer').style.display = mode==='add' ? 'block' : 'none';
+  renderFullListModal();
+  document.getElementById('list-modal').classList.add('open');
+}
+function closeModal(){
+  document.getElementById('list-modal').classList.remove('open');
+}
+document.getElementById('open-list-btn').onclick = ()=>openModal('view');
+document.getElementById('close-list-btn').onclick = closeModal;
+document.getElementById('modal-done-btn').onclick = closeModal;
+document.getElementById('list-modal').onclick = (e)=>{
+  if(e.target.id==='list-modal') closeModal();
+};
+
+function renderFullListModal(){
+  const tbody = document.getElementById('full-list-tbody');
+  tbody.innerHTML='';
+  let no = 1;
+  GROUPS_ORDER.forEach(grp=>{
+    const groupItems = ETF_LIST.filter(e=>e.grp===grp);
+    if(!groupItems.length) return;
+    const headTr = document.createElement('tr');
+    headTr.className = 'group-header-row';
+    headTr.innerHTML = `<td colspan="4">${grp}</td>`;
+    tbody.appendChild(headTr);
+    const themes = [...new Set(groupItems.map(e=>e.th))];
+    themes.forEach(th=>{
+      groupItems.filter(e=>e.th===th).forEach((e,idx)=>{
+        const tr = document.createElement('tr');
+        const already = portfolio.some(p=>p.t===e.t);
+        if(modalMode==='add'){
+          tr.className = already ? 'picked' : 'pickable';
+        }
+        tr.innerHTML = `<td>${no++}</td><td>${idx===0?th:''}</td><td>${e.t}</td><td>${e.n}${(modalMode==='add' && already)?'<span class="picked-tag">담김</span>':''}</td>`;
+        if(modalMode==='add' && !already){
+          tr.onclick = ()=>{
+            portfolio.push({t:e.t,n:e.n,th:e.th,a:e.a,w:0});
+            activePreset = null;
+            renderRiskCards();
+            renderPortfolio();
+            renderFullListModal();
+          };
+        }
+        tbody.appendChild(tr);
+      });
+    });
+  });
+}
+
+/* ---------- Portfolio table + chart ---------- */
+function renderPortfolio(){
+  const tbody = document.getElementById('port-tbody');
+  const emptyMsg = document.getElementById('empty-msg');
+  tbody.innerHTML='';
+  document.getElementById('port-table').style.display = portfolio.length ? '' : 'none';
+  emptyMsg.style.display = portfolio.length ? 'none' : '';
+
+  portfolio.forEach((row,idx)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${row.th}</td>
+      <td>${row.n} <span class="ticker-tag">${row.t}</span></td>
+      <td>
+        <div class="weight-cell">
+          <input type="range" min="0" max="100" step="1" value="${row.w}" data-idx="${idx}" class="w-range">
+          <input type="number" min="0" max="100" step="1" value="${row.w}" data-idx="${idx}" class="w-number">
+          <span>%</span>
+        </div>
+      </td>
+      <td><button class="remove-btn" data-idx="${idx}">×</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll('.w-range').forEach(el=>{
+    el.oninput = (e)=>{ const i=+e.target.dataset.idx; portfolio[i].w = +e.target.value; syncWeightInputs(i); updateTotals(); };
+  });
+  tbody.querySelectorAll('.w-number').forEach(el=>{
+    el.oninput = (e)=>{ let v=Math.max(0,Math.min(100,+e.target.value||0)); const i=+e.target.dataset.idx; portfolio[i].w=v; syncWeightInputs(i); updateTotals(); };
+  });
+  tbody.querySelectorAll('.remove-btn').forEach(el=>{
+    el.onclick = (e)=>{ const i=+e.target.dataset.idx; portfolio.splice(i,1); activePreset=null; renderRiskCards(); renderPortfolio(); };
+  });
+
+  updateTotals();
+}
+function syncWeightInputs(i){
+  document.querySelectorAll(`.w-range[data-idx="${i}"]`).forEach(el=>el.value=portfolio[i].w);
+  document.querySelectorAll(`.w-number[data-idx="${i}"]`).forEach(el=>el.value=portfolio[i].w);
+}
+function updateTotals(){
+  const total = portfolio.reduce((s,p)=>s+p.w,0);
+  const bar = document.getElementById('total-bar');
+  document.getElementById('total-val').textContent = total + '%';
+  bar.classList.toggle('total-ok', total===100);
+  bar.classList.toggle('total-warn', total!==100);
+  updateChart();
+  updateRationale();
+}
+function updateChart(){
+  const totals = {dom_equity:0, global_equity:0, bond:0, alt:0};
+  portfolio.forEach(p=>{ totals[p.a] += p.w; });
+  const labels = Object.keys(ASSET_CLASSES).map(k=>ASSET_CLASSES[k].ko);
+  const data = Object.keys(ASSET_CLASSES).map(k=>totals[k]);
+  const colors = Object.keys(ASSET_CLASSES).map(k=>ASSET_CLASSES[k].color);
+
+  const ctx = document.getElementById('donut-chart').getContext('2d');
+  if(donutChart) donutChart.destroy();
+  donutChart = new Chart(ctx, {
+    type:'doughnut',
+    data:{ labels, datasets:[{ data, backgroundColor:colors, borderColor:'#fff', borderWidth:2 }] },
+    options:{ plugins:{ legend:{ display:false } }, cutout:'62%' }
+  });
+
+  const legendList = document.getElementById('legend-list');
+  legendList.innerHTML='';
+  Object.keys(ASSET_CLASSES).forEach(k=>{
+    const c = ASSET_CLASSES[k];
+    const row = document.createElement('div');
+    row.className='legend-row';
+    row.innerHTML = `<span><span class="dot" style="background:${c.color}"></span>${c.ko}</span><span class="val">${totals[k]}%</span>`;
+    legendList.appendChild(row);
+  });
+  return totals;
+}
+
+/* ---------- Rationale (auto-generated construction comment) ---------- */
+function updateRationale(){
+  const el = document.getElementById('rationale-text');
+  if(portfolio.length===0){
+    el.textContent = '포트폴리오를 구성하면 이 종목·비중을 선택한 이유가 여기에 자동으로 표시됩니다.';
+    return;
+  }
+  const total = portfolio.reduce((s,p)=>s+p.w,0) || 1;
+  const totals = {dom_equity:0, global_equity:0, bond:0, alt:0};
+  portfolio.forEach(p=>{ totals[p.a]+=p.w; });
+  const pct = k => Math.round((totals[k]/total)*100);
+
+  const themeWeights = {};
+  portfolio.forEach(p=>{ themeWeights[p.th] = (themeWeights[p.th]||0) + p.w; });
+  const topThemes = Object.entries(themeWeights).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]);
+
+  let sentences = [];
+
+  if(activePreset==='conservative'){
+    sentences.push('채권과 금 비중을 전체의 ' + (pct('bond')+pct('alt')) + '%까지 높여 시장 변동성 확대 국면에서도 자산가치 방어에 무게를 둔 배분입니다.');
+    sentences.push('배당 및 우량 대형주를 일부 편입해 최소한의 이익 성장 기회도 함께 확보했습니다.');
+  } else if(activePreset==='moderate'){
+    sentences.push('국내·해외 주식과 채권을 각각 균형 있게 배분해 특정 자산군의 변동성에 포트폴리오 전체가 과도하게 흔들리지 않도록 설계했습니다.');
+    sentences.push('반도체 등 성장 테마를 일부 편입해 상승 국면에서도 수익 기회를 놓치지 않도록 했습니다.');
+  } else if(activePreset==='aggressive'){
+    sentences.push('AI·반도체·로봇 등 구조적 성장 테마 비중을 전체의 ' + (pct('dom_equity')+pct('global_equity')) + '%까지 확대해 높은 변동성을 감수하더라도 초과 수익을 추구하는 배분입니다.');
+    sentences.push('금 비중을 소폭 편입해 급락 국면에서의 완충 역할도 남겨두었습니다.');
+  } else {
+    // custom / freeform composition
+    const dominant = Object.entries(totals).sort((a,b)=>b[1]-a[1])[0][0];
+    const dominantLabel = ASSET_CLASSES[dominant].ko;
+    sentences.push(`현재 구성은 ${dominantLabel} 비중이 ${pct(dominant)}%로 가장 높아, 해당 자산군의 흐름에 포트폴리오 성과가 가장 크게 연동되는 구조입니다.`);
+    if(topThemes.length){
+      sentences.push(`특히 '${topThemes.join("', '")}' 테마 비중이 높아, 관련 업황과 정책 모멘텀에 대한 고객의 이해와 변동성 감내 여부를 함께 확인하실 필요가 있습니다.`);
+    }
+    if(pct('bond')+pct('alt') >= 30){
+      sentences.push('채권·금 등 방어 자산 비중도 일정 수준 확보되어 있어 급락 시 완충 여력은 갖추고 있습니다.');
+    } else if(pct('bond')+pct('alt') < 10){
+      sentences.push('반면 채권·금 등 방어 자산 비중은 낮은 편으로, 하락 국면에 대한 고객의 리스크 감내 수준을 사전에 점검하시길 권장합니다.');
+    }
+  }
+
+  if(Math.abs(total-100) > 0.5){
+    sentences.push(`※ 현재 합계 비중이 ${total}%로 100%가 아닙니다. 최종 제안 전 비중 합을 100%로 맞춰주세요.`);
+  }
+
+  el.innerHTML = sentences.map(s=>`<p style="margin:0 0 0.6rem 0;">${s}</p>`).join('');
+}
+
+/* ---------- Market comment persistence ---------- */
+const marketCommentEl = document.getElementById('market-comment');
+try{
+  const saved = localStorage.getItem('etf_market_comment');
+  if(saved) marketCommentEl.value = saved;
+}catch(e){}
+marketCommentEl.addEventListener('input', ()=>{
+  try{ localStorage.setItem('etf_market_comment', marketCommentEl.value); }catch(e){}
+});
+
+/* ---------- Init ---------- */
+renderRiskCards();
+renderPortfolio();
+</script>
+</body>
+</html>
