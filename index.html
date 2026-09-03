@@ -500,9 +500,13 @@ document.getElementById('image-btn').onclick = async ()=>{
   const prevWidth = root.style.width;
   const prevMaxWidth = root.style.maxWidth;
   const prevMargin = root.style.margin;
+  const prevPadding = root.style.padding;
+  const prevBg = root.style.backgroundColor;
   root.style.width = '800px';
   root.style.maxWidth = '800px';
   root.style.margin = '0';
+  root.style.padding = '48px 40px 32px 40px';
+  root.style.backgroundColor = '#ffffff';
   try{
     await new Promise(r=>setTimeout(r, 80));
     const canvas = await html2canvas(root, {scale:2, backgroundColor:'#ffffff', useCORS:true, windowWidth:800});
@@ -520,6 +524,8 @@ document.getElementById('image-btn').onclick = async ()=>{
     root.style.width = prevWidth;
     root.style.maxWidth = prevMaxWidth;
     root.style.margin = prevMargin;
+    root.style.padding = prevPadding;
+    root.style.backgroundColor = prevBg;
     btn.textContent = originalLabel;
     btn.disabled = false;
   }
