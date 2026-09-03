@@ -169,14 +169,15 @@ body.print-mode .mast-inner{padding-top:0;padding-bottom:0;gap:0;align-items:str
 body.print-mode .mast-line1,body.print-mode .mast-line2,body.print-mode .menu-btn{display:none !important;}
 body.print-mode .print-mast-box{display:block;width:100%;box-sizing:border-box;background:var(--brand-orange) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:0.9rem 1.1rem;text-align:left;}
 body.print-mode .print-mast-company{font-size:1.35rem;font-weight:600;letter-spacing:0.4px;color:rgba(255,255,255,0.92);}
-body.print-mode .print-mast-company-sub{font-size:0.82em;}
-body.print-mode .print-mast-title{font-size:2rem;font-weight:700;letter-spacing:0.1px;color:#fff;line-height:1.28;margin-top:0.3rem;}
-body.print-mode .print-mast-suffix{font-size:0.4em;font-weight:600;margin-left:0.35em;}
+body.print-mode .print-mast-title-wrap{display:inline-block;font-size:2rem;font-weight:700;color:#fff;line-height:1.28;margin-top:0.3rem;}
+body.print-mode .print-mast-name{font-size:1.12em;}
+body.print-mode .print-mast-rest{font-size:1em;}
+body.print-mode .print-mast-suffix-line{display:block;font-size:0.4em;font-weight:600;text-align:right;margin-top:0.2em;}
 body.print-mode .section{padding:0;}
 body.print-mode .section-rule{display:none;}
 
 /* Table: refined document look */
-body.print-mode table.port-table{font-size:0.88rem;border:1px solid var(--brand-orange);margin-top:1.8rem;}
+body.print-mode table.port-table{font-size:0.88rem;border:1px solid var(--brand-orange);margin-top:2.7rem;}
 body.print-mode table.port-table th{background:var(--brand-orange) !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-weight:700;letter-spacing:0.2px;padding:0.55rem 0.6rem;border-color:var(--brand-orange);}
 body.print-mode table.port-table td{padding:0.5rem 0.6rem;border-color:var(--hairline-soft);}
 body.print-mode table.port-table tbody tr:nth-child(even){background:#FDF0E4;}
@@ -207,8 +208,11 @@ body.print-mode .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:
     <div class="mast-line2">ETF포트폴리오<span class="mt-small">(개인연금,IRP,ISA)</span></div>
     <button class="menu-btn" id="open-list-btn">자산배분 ETF 리스트 전체보기</button>
     <div class="print-mast-box print-only">
-      <div class="print-mast-company">미래에셋증권<span class="print-mast-company-sub"> 투자센터대구WM</span></div>
-      <div class="print-mast-title" id="print-mast-title">고객님을 위한 ETF포트폴리오<span class="print-mast-suffix">(개인연금,IRP,ISA)</span></div>
+      <div class="print-mast-company">미래에셋증권 투자센터대구WM</div>
+      <div class="print-mast-title-wrap">
+        <div class="print-mast-title-line1"><span class="print-mast-name" id="print-mast-name">고객님</span><span class="print-mast-rest">을 위한 ETF포트폴리오</span></div>
+        <div class="print-mast-suffix-line">(개인연금,IRP,ISA)</div>
+      </div>
     </div>
   </div>
 </header>
@@ -645,16 +649,10 @@ rationaleCommentEl.addEventListener('input', ()=>{
 
 /* ---------- Customer name (screen input -> print masthead title) ---------- */
 const customerNameEl = document.getElementById('customer-name');
-const printMastTitleEl = document.getElementById('print-mast-title');
-function escapeHtml(str){
-  const d = document.createElement('div');
-  d.textContent = str;
-  return d.innerHTML;
-}
+const printMastNameEl = document.getElementById('print-mast-name');
 function updateCustomerName(){
   const name = customerNameEl.value.trim();
-  const prefix = name ? escapeHtml(name) : '';
-  printMastTitleEl.innerHTML = `${prefix}고객님을 위한 ETF포트폴리오<span class="print-mast-suffix">(개인연금,IRP,ISA)</span>`;
+  printMastNameEl.textContent = name + '고객님';
 }
 customerNameEl.addEventListener('input', updateCustomerName);
 updateCustomerName();
