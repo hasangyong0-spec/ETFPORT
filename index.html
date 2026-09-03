@@ -169,7 +169,9 @@ body.print-mode .mast-inner{padding-top:0;padding-bottom:0;gap:0;align-items:str
 body.print-mode .mast-line1,body.print-mode .mast-line2,body.print-mode .menu-btn{display:none !important;}
 body.print-mode .print-mast-box{display:block;width:100%;box-sizing:border-box;background:var(--brand-orange) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:0.9rem 1.1rem;text-align:left;}
 body.print-mode .print-mast-company{font-size:1.35rem;font-weight:600;letter-spacing:0.4px;color:rgba(255,255,255,0.92);}
+body.print-mode .print-mast-company-sub{font-size:0.82em;}
 body.print-mode .print-mast-title{font-size:2rem;font-weight:700;letter-spacing:0.1px;color:#fff;line-height:1.28;margin-top:0.3rem;}
+body.print-mode .print-mast-suffix{font-size:0.4em;font-weight:600;margin-left:0.35em;}
 body.print-mode .section{padding:0;}
 body.print-mode .section-rule{display:none;}
 
@@ -198,14 +200,15 @@ body.print-mode .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:
 </head>
 <body>
 
+<div id="capture-root">
 <header class="mast">
   <div class="wrap mast-inner">
     <div class="mast-line1">미래에셋증권 투자센터대구WM</div>
     <div class="mast-line2">ETF포트폴리오<span class="mt-small">(개인연금,IRP,ISA)</span></div>
     <button class="menu-btn" id="open-list-btn">자산배분 ETF 리스트 전체보기</button>
     <div class="print-mast-box print-only">
-      <div class="print-mast-company">미래에셋증권 투자센터대구WM</div>
-      <div class="print-mast-title" id="print-mast-title">고객님을 위한 ETF포트폴리오</div>
+      <div class="print-mast-company">미래에셋증권<span class="print-mast-company-sub"> 투자센터대구WM</span></div>
+      <div class="print-mast-title" id="print-mast-title">고객님을 위한 ETF포트폴리오<span class="print-mast-suffix">(개인연금,IRP,ISA)</span></div>
     </div>
   </div>
 </header>
@@ -277,6 +280,7 @@ body.print-mode .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:
 </footer>
 
 <p class="disclaimer print-only" style="text-align:center;">본 자료는 예시이며 투자 권유·자문이 아닙니다. 투자원금 손실이 발생할 수 있습니다.</p>
+</div>
 
 <div class="modal-backdrop" id="general-modal">
   <div class="modal-box" style="max-width:420px;">
@@ -484,13 +488,20 @@ window.addEventListener('afterprint', ()=>document.body.classList.remove('print-
 
 document.getElementById('image-btn').onclick = async ()=>{
   const btn = document.getElementById('image-btn');
+  const root = document.getElementById('capture-root');
   const originalLabel = btn.textContent;
   btn.textContent = '이미지 생성 중...';
   btn.disabled = true;
   document.body.classList.add('print-mode');
+  const prevWidth = root.style.width;
+  const prevMaxWidth = root.style.maxWidth;
+  const prevMargin = root.style.margin;
+  root.style.width = '800px';
+  root.style.maxWidth = '800px';
+  root.style.margin = '0';
   try{
-    await new Promise(r=>setTimeout(r, 60));
-    const canvas = await html2canvas(document.body, {scale:2, backgroundColor:'#ffffff', useCORS:true});
+    await new Promise(r=>setTimeout(r, 80));
+    const canvas = await html2canvas(root, {scale:2, backgroundColor:'#ffffff', useCORS:true, windowWidth:800});
     const link = document.createElement('a');
     const custName = document.getElementById('customer-name').value.trim();
     link.download = (custName ? custName + '_' : '') + 'ETF포트폴리오제안.png';
@@ -502,6 +513,9 @@ document.getElementById('image-btn').onclick = async ()=>{
     alert('이미지 저장 중 오류가 발생했습니다.');
   }finally{
     document.body.classList.remove('print-mode');
+    root.style.width = prevWidth;
+    root.style.maxWidth = prevMaxWidth;
+    root.style.margin = prevMargin;
     btn.textContent = originalLabel;
     btn.disabled = false;
   }
@@ -632,11 +646,15 @@ rationaleCommentEl.addEventListener('input', ()=>{
 /* ---------- Customer name (screen input -> print masthead title) ---------- */
 const customerNameEl = document.getElementById('customer-name');
 const printMastTitleEl = document.getElementById('print-mast-title');
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
 function updateCustomerName(){
   const name = customerNameEl.value.trim();
-  printMastTitleEl.textContent = name
-    ? `${name}고객님을 위한 ETF포트폴리오`
-    : '고객님을 위한 ETF포트폴리오';
+  const prefix = name ? escapeHtml(name) : '';
+  printMastTitleEl.innerHTML = `${prefix}고객님을 위한 ETF포트폴리오<span class="print-mast-suffix">(개인연금,IRP,ISA)</span>`;
 }
 customerNameEl.addEventListener('input', updateCustomerName);
 updateCustomerName();
