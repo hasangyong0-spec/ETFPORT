@@ -105,7 +105,6 @@ table.port-table tr:hover td{background:var(--surface-subtle);}
 .comment-label{font-size:0.78rem;font-weight:700;color:var(--gold);letter-spacing:0.4px;text-transform:uppercase;margin-bottom:0.5rem;}
 .comment-block textarea{width:100%;min-height:5.2rem;border:1px solid var(--hairline);border-radius:4px;padding:0.7rem;font-size:0.9rem;line-height:1.6;color:var(--body);resize:vertical;}
 .comment-block textarea:focus{outline:2px solid var(--sky);border-color:var(--navy);}
-.rationale-text{font-size:0.92rem;line-height:1.75;color:var(--body-strong);}
 .comment-meta{font-size:0.76rem;color:var(--muted-soft);margin-top:0.5rem;}
 
 /* Modal */
@@ -151,22 +150,26 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
   .print-only{display:block !important;}
   @page{ margin:12mm; }
   body{font-size:11px;line-height:1.4;}
-  header.mast{background:var(--navy) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-  .mast-inner{padding:0.5rem 0;gap:0.15rem;}
-  .mast-line1{font-size:1.25rem;}
-  .mast-line2{font-size:0.95rem;}
+  header.mast{background:var(--navy) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding-bottom:0.4rem;}
+  .mast-inner{padding:0.6rem 0;gap:0.2rem;}
+  .mast-line1{font-size:1.7rem;}
+  .mast-line2{font-size:1.3rem;}
   .section{padding:0.5rem 0;}
   .section-rule{margin-bottom:0.5rem;}
-  .print-proposal-title{font-size:1.25rem;margin:0.3rem 0 0.5rem 0;}
+  .print-proposal-title{font-size:1.55rem;margin:1.3rem 0 0.9rem 0;}
   .section-title{font-size:1.05rem;margin-bottom:0.3rem;}
-  table.port-table{font-size:0.78rem;}
-  table.port-table th,table.port-table td{padding:0.3rem 0.45rem;}
-  .total-bar{padding:0.45rem 0.6rem;font-size:0.85rem;margin-bottom:0.5rem;}
+  table.port-table{font-size:0.85rem;}
+  table.port-table th,table.port-table td{padding:0.4rem 0.55rem;}
+  table.port-table th:last-child,table.port-table td:last-child{display:none;}
+  #total-bar{display:none !important;}
+  .weight-cell{justify-content:flex-end;}
+  .weight-cell input[type=number]{border:none;background:transparent;padding:0;width:auto;text-align:right;color:var(--ink);font-weight:600;-moz-appearance:textfield;}
+  .weight-cell input[type=number]::-webkit-outer-spin-button,
+  .weight-cell input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
   .comment-box{margin-top:0.6rem;}
   .comment-block{padding:0.6rem 0.8rem;}
   .comment-block textarea{min-height:2.8rem;font-size:0.78rem;border:none;padding:0;resize:none;}
   .comment-label{font-size:0.68rem;margin-bottom:0.3rem;}
-  .rationale-text{font-size:0.8rem;line-height:1.5;}
   .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:center;margin-top:0.6rem;}
 }
 </style>
@@ -231,7 +234,8 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
       </div>
       <div class="comment-block">
         <div class="comment-label">포트폴리오 구성 코멘트</div>
-        <div class="rationale-text" id="rationale-text">포트폴리오를 구성하면 이 종목·비중을 선택한 이유가 여기에 자동으로 표시됩니다.</div>
+        <textarea id="rationale-comment" placeholder="이 포트폴리오를 이렇게 구성한 이유를 직접 입력하세요. (예: 채권·금 비중을 높여 변동성 방어에 무게를 둔 배분입니다 등)"></textarea>
+        <div class="comment-meta screen-only">이 내용은 브라우저에 자동 저장되며, 미팅 전 자유롭게 수정할 수 있습니다.</div>
       </div>
     </div>
   </section>
@@ -267,14 +271,6 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
 
 <script>
 /* ---------- Data ---------- */
-const ASSET_CLASSES = {
-  dom_equity:{ko:'국내주식'},
-  global_equity:{ko:'해외주식'},
-  bond:{ko:'채권'},
-  alt:{ko:'대체자산(금)'},
-  other:{ko:'직접입력 종목'}
-};
-
 /* 구분(grp) 순서 = 사내한 "자산배분 ETF 리스트" 원문 순서: 지수/지역 → 글로벌테마 → 자산배분 → 원자재 → 국내주식형(신설) */
 const GROUPS_ORDER = ['지수/지역','글로벌테마','자산배분','원자재','국내주식형(신설)'];
 
@@ -392,11 +388,13 @@ function loadPreset(key){
 /* ---------- Theme/ETF pickers (now via modal) ---------- */
 document.getElementById('add-btn').onclick = ()=>openModal('add');
 document.getElementById('add-general-btn').onclick = ()=>{
-  const name = window.prompt('추가할 ETF명을 입력하세요.');
-  if(!name || !name.trim()) return;
+  const theme = window.prompt('테마를 입력하세요. (예: 배당, 채권, 리츠 등)');
+  if(theme===null || !theme.trim()) return;
+  const name = window.prompt('ETF명을 입력하세요.');
+  if(name===null || !name.trim()) return;
   activePreset = null;
   renderRiskCards();
-  portfolio.push({t:'', n:name.trim(), th:'직접입력', a:'other', w:null});
+  portfolio.push({t:'', n:name.trim(), th:theme.trim(), a:'other', w:null});
   renderPortfolio();
 };
 document.getElementById('clear-btn').onclick = ()=>{
@@ -505,60 +503,6 @@ function updateTotals(){
   document.getElementById('total-val').textContent = total + '%';
   bar.classList.toggle('total-ok', total===100);
   bar.classList.toggle('total-warn', total!==100);
-  updateRationale();
-}
-function computeAssetTotals(){
-  const totals = {dom_equity:0, global_equity:0, bond:0, alt:0, other:0};
-  portfolio.forEach(p=>{ totals[p.a] = (totals[p.a]||0) + (p.w||0); });
-  return totals;
-}
-
-/* ---------- Rationale (auto-generated construction comment) ---------- */
-function updateRationale(){
-  const el = document.getElementById('rationale-text');
-  if(portfolio.length===0){
-    el.textContent = '포트폴리오를 구성하면 이 종목·비중을 선택한 이유가 여기에 자동으로 표시됩니다.';
-    return;
-  }
-  const total = portfolio.reduce((s,p)=>s+(p.w||0),0) || 1;
-  const totals = computeAssetTotals();
-  const pct = k => Math.round(((totals[k]||0)/total)*100);
-
-  const themeWeights = {};
-  portfolio.forEach(p=>{ themeWeights[p.th] = (themeWeights[p.th]||0) + (p.w||0); });
-  const topThemes = Object.entries(themeWeights).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]);
-
-  let sentences = [];
-
-  if(activePreset==='conservative'){
-    sentences.push('채권과 금 비중을 전체의 ' + (pct('bond')+pct('alt')) + '%까지 높여 시장 변동성 확대 국면에서도 자산가치 방어에 무게를 둔 배분입니다.');
-    sentences.push('배당 및 우량 대형주를 일부 편입해 최소한의 이익 성장 기회도 함께 확보했습니다.');
-  } else if(activePreset==='moderate'){
-    sentences.push('국내·해외 주식과 채권을 각각 균형 있게 배분해 특정 자산군의 변동성에 포트폴리오 전체가 과도하게 흔들리지 않도록 설계했습니다.');
-    sentences.push('반도체 등 성장 테마를 일부 편입해 상승 국면에서도 수익 기회를 놓치지 않도록 했습니다.');
-  } else if(activePreset==='aggressive'){
-    sentences.push('AI·반도체·로봇 등 구조적 성장 테마 비중을 전체의 ' + (pct('dom_equity')+pct('global_equity')) + '%까지 확대해 높은 변동성을 감수하더라도 초과 수익을 추구하는 배분입니다.');
-    sentences.push('금 비중을 소폭 편입해 급락 국면에서의 완충 역할도 남겨두었습니다.');
-  } else {
-    // custom / freeform composition
-    const dominant = Object.entries(totals).sort((a,b)=>b[1]-a[1])[0][0];
-    const dominantLabel = ASSET_CLASSES[dominant].ko;
-    sentences.push(`현재 구성은 ${dominantLabel} 비중이 ${pct(dominant)}%로 가장 높아, 해당 자산군의 흐름에 포트폴리오 성과가 가장 크게 연동되는 구조입니다.`);
-    if(topThemes.length){
-      sentences.push(`특히 '${topThemes.join("', '")}' 테마 비중이 높아, 관련 업황과 정책 모멘텀에 대한 고객의 이해와 변동성 감내 여부를 함께 확인하실 필요가 있습니다.`);
-    }
-    if(pct('bond')+pct('alt') >= 30){
-      sentences.push('채권·금 등 방어 자산 비중도 일정 수준 확보되어 있어 급락 시 완충 여력은 갖추고 있습니다.');
-    } else if(pct('bond')+pct('alt') < 10){
-      sentences.push('반면 채권·금 등 방어 자산 비중은 낮은 편으로, 하락 국면에 대한 고객의 리스크 감내 수준을 사전에 점검하시길 권장합니다.');
-    }
-  }
-
-  if(Math.abs(total-100) > 0.5){
-    sentences.push(`※ 현재 합계 비중이 ${total}%로 100%가 아닙니다. 최종 제안 전 비중 합을 100%로 맞춰주세요.`);
-  }
-
-  el.innerHTML = sentences.map(s=>`<p style="margin:0 0 0.6rem 0;">${s}</p>`).join('');
 }
 
 /* ---------- Market comment persistence ---------- */
@@ -569,6 +513,16 @@ try{
 }catch(e){}
 marketCommentEl.addEventListener('input', ()=>{
   try{ localStorage.setItem('etf_market_comment', marketCommentEl.value); }catch(e){}
+});
+
+/* ---------- Rationale comment persistence ---------- */
+const rationaleCommentEl = document.getElementById('rationale-comment');
+try{
+  const savedR = localStorage.getItem('etf_rationale_comment');
+  if(savedR) rationaleCommentEl.value = savedR;
+}catch(e){}
+rationaleCommentEl.addEventListener('input', ()=>{
+  try{ localStorage.setItem('etf_rationale_comment', rationaleCommentEl.value); }catch(e){}
 });
 
 /* ---------- Customer name (screen input -> print proposal title) ---------- */
