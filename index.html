@@ -155,7 +155,6 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
 .customer-input::placeholder{color:var(--muted-soft);font-weight:500;}
 .heading-line1{display:block;}
 .heading-line2{display:block;margin-top:0.3rem;}
-.print-proposal-title{font-size:1.4rem;font-weight:700;color:var(--navy-deep);text-align:center;margin:0.6rem 0 0.2rem 0;}
 
 @media print{
   .screen-only{display:none !important;}
@@ -163,36 +162,33 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
   @page{ margin:14mm 13mm; }
   *{box-shadow:none !important;}
   body{font-size:11px;line-height:1.45;color:var(--body-strong);}
-  header.mast{background:var(--navy) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding-bottom:0.5rem;}
-  .mast-inner{padding:0.7rem 0;gap:0.22rem;}
-  .mast-line1{font-size:1.75rem;letter-spacing:0.3px;color:#fff !important;}
-  .mast-line2{font-size:1.32rem;}
+  header.mast{background:var(--brand-orange) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding-bottom:0.6rem;}
+  .mast-inner{padding:0.7rem 0;gap:0.3rem;align-items:flex-start;}
+  .mast-line1,.mast-line2,.menu-btn{display:none !important;}
+  .print-mast-company{display:block;font-size:0.78rem;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.88);}
+  .print-mast-title{display:block;font-size:2rem;font-weight:700;letter-spacing:0.1px;color:#fff;line-height:1.28;}
   .section{padding:0;}
   .section-rule{display:none;}
 
-  /* Proposal title block */
-  .print-proposal-title{font-size:1.5rem;font-weight:700;letter-spacing:0.2px;color:var(--navy-deep);text-align:left;margin:2.6rem 0 0 0;}
-  .customer-name-highlight{color:var(--navy-deep);font-size:1.2em;font-weight:800;}
-
   /* Table: refined document look */
-  table.port-table{font-size:0.88rem;border:1px solid var(--navy);}
-  table.port-table th{background:var(--navy) !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-weight:700;letter-spacing:0.2px;padding:0.55rem 0.6rem;border-color:var(--navy);}
+  table.port-table{font-size:0.88rem;border:1px solid var(--brand-orange);margin-top:1.8rem;}
+  table.port-table th{background:var(--brand-orange) !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-weight:700;letter-spacing:0.2px;padding:0.55rem 0.6rem;border-color:var(--brand-orange);}
   table.port-table td{padding:0.5rem 0.6rem;border-color:var(--hairline-soft);}
-  table.port-table tbody tr:nth-child(even){background:var(--surface-soft);}
+  table.port-table tbody tr:nth-child(even){background:#FDF0E4;}
   table.port-table th:last-child,table.port-table td:last-child{display:none;}
   #total-bar{display:none !important;}
   .weight-cell{justify-content:flex-end;}
-  .weight-cell input[type=number]{border:none;background:transparent;padding:0;width:auto;text-align:right;color:var(--navy-deep);font-weight:700;font-variant-numeric:tabular-nums;-moz-appearance:textfield;}
+  .weight-cell input[type=number]{border:none;background:transparent;padding:0;width:auto;text-align:right;color:var(--brand-orange);font-weight:700;font-variant-numeric:tabular-nums;-moz-appearance:textfield;}
   .weight-cell input[type=number]::-webkit-outer-spin-button,
   .weight-cell input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
-  .weight-cell span{color:var(--navy-deep);font-weight:700;}
+  .weight-cell span{color:var(--brand-orange);font-weight:700;}
 
   /* Comment cards: premium note style */
   .comment-box{margin-top:1.3rem;border:none;box-shadow:none;}
-  .comment-block{padding:0.7rem 0 0.7rem 0.9rem;border-left:3px solid var(--navy);border-top:none !important;}
+  .comment-block{padding:0.7rem 0 0.7rem 0.9rem;border-left:3px solid var(--brand-orange);border-top:none !important;}
   .comment-block + .comment-block{margin-top:0.8rem;}
   .comment-block textarea{min-height:2.6rem;font-size:0.82rem;border:none;padding:0;resize:none;color:var(--body-strong);}
-  .comment-label{font-size:0.68rem;font-weight:700;letter-spacing:0.6px;margin-bottom:0.35rem;color:var(--navy-deep);}
+  .comment-label{font-size:0.68rem;font-weight:700;letter-spacing:0.6px;margin-bottom:0.35rem;color:var(--brand-orange);}
 
   .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:center;margin-top:1rem;padding-top:0.6rem;border-top:1px solid var(--hairline-soft);}
 }
@@ -205,6 +201,8 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
     <div class="mast-line1">미래에셋증권 투자센터대구WM</div>
     <div class="mast-line2">ETF포트폴리오<span class="mt-small">(개인연금,IRP,ISA)</span></div>
     <button class="menu-btn" id="open-list-btn">자산배분 ETF 리스트 전체보기</button>
+    <div class="print-mast-company print-only">미래에셋증권 투자센터대구WM</div>
+    <div class="print-mast-title print-only" id="print-mast-title">고객님을 위한 ETF포트폴리오(개인연금,IRP,ISA)</div>
   </div>
 </header>
 
@@ -236,8 +234,6 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
         <button class="btn btn-orange" id="print-btn">PDF 저장</button>
       </div>
     </div>
-
-    <h1 class="print-proposal-title print-only" id="print-proposal-title">고객님을 위한 ETF포트폴리오 제안</h1>
 
     <div class="total-bar" id="total-bar">
       <span>합계 비중</span>
@@ -601,19 +597,14 @@ rationaleCommentEl.addEventListener('input', ()=>{
   try{ localStorage.setItem('etf_rationale_comment', rationaleCommentEl.value); }catch(e){}
 });
 
-/* ---------- Customer name (screen input -> print proposal title) ---------- */
+/* ---------- Customer name (screen input -> print masthead title) ---------- */
 const customerNameEl = document.getElementById('customer-name');
-const printProposalTitleEl = document.getElementById('print-proposal-title');
-function escapeHtml(str){
-  const d = document.createElement('div');
-  d.textContent = str;
-  return d.innerHTML;
-}
+const printMastTitleEl = document.getElementById('print-mast-title');
 function updateCustomerName(){
   const name = customerNameEl.value.trim();
-  printProposalTitleEl.innerHTML = name
-    ? `<span class="customer-name-highlight">${escapeHtml(name)}</span>고객님을 위한 ETF포트폴리오 제안`
-    : '고객님을 위한 ETF포트폴리오 제안';
+  printMastTitleEl.textContent = name
+    ? `${name}고객님을 위한 ETF포트폴리오(개인연금,IRP,ISA)`
+    : '고객님을 위한 ETF포트폴리오(개인연금,IRP,ISA)';
 }
 customerNameEl.addEventListener('input', updateCustomerName);
 updateCustomerName();
