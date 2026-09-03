@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 :root{
   --navy:#043B72; --navy-deep:#03294F; --navy-active:#022238;
@@ -146,7 +147,7 @@ tr.picked td{background:#EAF4EC !important;color:var(--muted);}
 footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
 .disclaimer{font-size:0.72rem;color:var(--muted-soft);line-height:1.65;}
 
-@media print{ .menu-btn,.picker-box,#print-btn,.modal-backdrop{display:none !important;} }
+@media print{ .menu-btn,.picker-box,#print-btn,.modal-backdrop{display:none !important;} @page{ margin:14mm 13mm; } }
 
 /* Screen/print variants */
 .print-only{display:none;}
@@ -155,43 +156,44 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
 .customer-input::placeholder{color:var(--muted-soft);font-weight:500;}
 .heading-line1{display:block;}
 .heading-line2{display:block;margin-top:0.3rem;}
+.print-mast-box{display:none;}
 
-@media print{
-  .screen-only{display:none !important;}
-  .print-only{display:block !important;}
-  @page{ margin:14mm 13mm; }
-  *{box-shadow:none !important;}
-  body{font-size:11px;line-height:1.45;color:var(--body-strong);}
-  header.mast{background:none !important;border-bottom:none !important;padding-bottom:0;}
-  .mast-inner{background:var(--brand-orange) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding-top:0.9rem !important;padding-bottom:0.9rem !important;gap:0.35rem;align-items:flex-start;}
-  .mast-line1,.mast-line2,.menu-btn{display:none !important;}
-  .print-mast-company{display:block;font-size:1.35rem;font-weight:600;letter-spacing:0.4px;color:rgba(255,255,255,0.92);}
-  .print-mast-title{display:block;font-size:2rem;font-weight:700;letter-spacing:0.1px;color:#fff;line-height:1.28;}
-  .section{padding:0;}
-  .section-rule{display:none;}
+/* print-mode: applied to <body> for real printing (beforeprint/afterprint) and for
+   image-export capture, so both produce an identical one-page layout. */
+body.print-mode .screen-only{display:none !important;}
+body.print-mode .print-only{display:block !important;}
+body.print-mode{font-size:11px;line-height:1.45;color:var(--body-strong);}
+body.print-mode *{box-shadow:none !important;}
+body.print-mode header.mast{background:none !important;border-bottom:none !important;padding-bottom:0;}
+body.print-mode .mast-inner{padding-top:0;padding-bottom:0;gap:0;align-items:stretch;}
+body.print-mode .mast-line1,body.print-mode .mast-line2,body.print-mode .menu-btn{display:none !important;}
+body.print-mode .print-mast-box{display:block;width:100%;box-sizing:border-box;background:var(--brand-orange) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:0.9rem 1.1rem;text-align:left;}
+body.print-mode .print-mast-company{font-size:1.35rem;font-weight:600;letter-spacing:0.4px;color:rgba(255,255,255,0.92);}
+body.print-mode .print-mast-title{font-size:2rem;font-weight:700;letter-spacing:0.1px;color:#fff;line-height:1.28;margin-top:0.3rem;}
+body.print-mode .section{padding:0;}
+body.print-mode .section-rule{display:none;}
 
-  /* Table: refined document look */
-  table.port-table{font-size:0.88rem;border:1px solid var(--brand-orange);margin-top:1.8rem;}
-  table.port-table th{background:var(--brand-orange) !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-weight:700;letter-spacing:0.2px;padding:0.55rem 0.6rem;border-color:var(--brand-orange);}
-  table.port-table td{padding:0.5rem 0.6rem;border-color:var(--hairline-soft);}
-  table.port-table tbody tr:nth-child(even){background:#FDF0E4;}
-  table.port-table th:last-child,table.port-table td:last-child{display:none;}
-  #total-bar{display:none !important;}
-  .weight-cell{justify-content:flex-end;}
-  .weight-cell input[type=number]{border:none;background:transparent;padding:0;width:auto;text-align:right;color:var(--brand-orange);font-weight:700;font-variant-numeric:tabular-nums;-moz-appearance:textfield;}
-  .weight-cell input[type=number]::-webkit-outer-spin-button,
-  .weight-cell input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
-  .weight-cell span{color:var(--brand-orange);font-weight:700;}
+/* Table: refined document look */
+body.print-mode table.port-table{font-size:0.88rem;border:1px solid var(--brand-orange);margin-top:1.8rem;}
+body.print-mode table.port-table th{background:var(--brand-orange) !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-weight:700;letter-spacing:0.2px;padding:0.55rem 0.6rem;border-color:var(--brand-orange);}
+body.print-mode table.port-table td{padding:0.5rem 0.6rem;border-color:var(--hairline-soft);}
+body.print-mode table.port-table tbody tr:nth-child(even){background:#FDF0E4;}
+body.print-mode table.port-table th:last-child,body.print-mode table.port-table td:last-child{display:none;}
+body.print-mode #total-bar{display:none !important;}
+body.print-mode .weight-cell{justify-content:flex-end;}
+body.print-mode .weight-cell input[type=number]{border:none;background:transparent;padding:0;width:auto;text-align:right;color:var(--brand-orange);font-weight:700;font-variant-numeric:tabular-nums;-moz-appearance:textfield;}
+body.print-mode .weight-cell input[type=number]::-webkit-outer-spin-button,
+body.print-mode .weight-cell input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+body.print-mode .weight-cell span{color:var(--brand-orange);font-weight:700;}
 
-  /* Comment cards: premium note style */
-  .comment-box{margin-top:1.3rem;border:none;box-shadow:none;}
-  .comment-block{padding:0.7rem 0 0.7rem 0.9rem;border-left:3px solid var(--brand-orange);border-top:none !important;}
-  .comment-block + .comment-block{margin-top:0.8rem;}
-  .comment-block textarea{min-height:2.6rem;font-size:0.82rem;border:none;padding:0;resize:none;color:var(--body-strong);}
-  .comment-label{font-size:0.68rem;font-weight:700;letter-spacing:0.6px;margin-bottom:0.35rem;color:var(--brand-orange);}
+/* Comment cards: premium note style */
+body.print-mode .comment-box{margin-top:1.3rem;border:none;box-shadow:none;}
+body.print-mode .comment-block{padding:0.7rem 0 0.7rem 0.9rem;border-left:3px solid var(--brand-orange);border-top:none !important;}
+body.print-mode .comment-block + .comment-block{margin-top:0.8rem;}
+body.print-mode .comment-block textarea{min-height:2.6rem;font-size:0.82rem;border:none;padding:0;resize:none;color:var(--body-strong);}
+body.print-mode .comment-label{font-size:0.68rem;font-weight:700;letter-spacing:0.6px;margin-bottom:0.35rem;color:var(--brand-orange);}
 
-  .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:center;margin-top:1rem;padding-top:0.6rem;border-top:1px solid var(--hairline-soft);}
-}
+body.print-mode .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:center;margin-top:1rem;padding-top:0.6rem;border-top:1px solid var(--hairline-soft);}
 </style>
 </head>
 <body>
@@ -201,8 +203,10 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
     <div class="mast-line1">미래에셋증권 투자센터대구WM</div>
     <div class="mast-line2">ETF포트폴리오<span class="mt-small">(개인연금,IRP,ISA)</span></div>
     <button class="menu-btn" id="open-list-btn">자산배분 ETF 리스트 전체보기</button>
-    <div class="print-mast-company print-only">미래에셋증권 투자센터대구WM</div>
-    <div class="print-mast-title print-only" id="print-mast-title">고객님을 위한 ETF포트폴리오</div>
+    <div class="print-mast-box print-only">
+      <div class="print-mast-company">미래에셋증권 투자센터대구WM</div>
+      <div class="print-mast-title" id="print-mast-title">고객님을 위한 ETF포트폴리오</div>
+    </div>
   </div>
 </header>
 
@@ -232,6 +236,7 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
       <div class="picker-row picker-row-bottom">
         <button class="btn btn-orange" id="clear-btn">전체 삭제</button>
         <button class="btn btn-orange" id="print-btn">PDF 저장</button>
+        <button class="btn btn-orange" id="image-btn">이미지 저장</button>
       </div>
     </div>
 
@@ -474,6 +479,33 @@ document.getElementById('clear-btn').onclick = ()=>{
   renderRiskCards(); renderPortfolio();
 };
 document.getElementById('print-btn').onclick = ()=>window.print();
+window.addEventListener('beforeprint', ()=>document.body.classList.add('print-mode'));
+window.addEventListener('afterprint', ()=>document.body.classList.remove('print-mode'));
+
+document.getElementById('image-btn').onclick = async ()=>{
+  const btn = document.getElementById('image-btn');
+  const originalLabel = btn.textContent;
+  btn.textContent = '이미지 생성 중...';
+  btn.disabled = true;
+  document.body.classList.add('print-mode');
+  try{
+    await new Promise(r=>setTimeout(r, 60));
+    const canvas = await html2canvas(document.body, {scale:2, backgroundColor:'#ffffff', useCORS:true});
+    const link = document.createElement('a');
+    const custName = document.getElementById('customer-name').value.trim();
+    link.download = (custName ? custName + '_' : '') + 'ETF포트폴리오제안.png';
+    link.href = canvas.toDataURL('image/png');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }catch(err){
+    alert('이미지 저장 중 오류가 발생했습니다.');
+  }finally{
+    document.body.classList.remove('print-mode');
+    btn.textContent = originalLabel;
+    btn.disabled = false;
+  }
+};
 
 /* ---------- List modal (view mode from header / add mode from builder) ---------- */
 let modalMode = 'view';
