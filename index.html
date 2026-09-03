@@ -12,7 +12,7 @@
   --navy:#043B72; --navy-deep:#03294F; --navy-active:#022238;
   --brand-orange:#F58220;
   --steel:#4C7EA8; --sky:#7FA8C9; --sky-soft:#DCE7F0;
-  --gold:#C9A227; --gold-soft:#EFE2B8;
+  --gold:#C9A227; --gold-soft:#EFE2B8; --gold-deep:#9C7A1E;
   --input-blue:#1A73E8;
   --canvas:#FFFFFF; --surface-soft:#F2F6FA; --surface-subtle:#F8FAFC;
   --hairline:#D7DEE5; --hairline-soft:#E7ECF1;
@@ -67,18 +67,22 @@ header.mast{background:linear-gradient(135deg,var(--navy-deep),var(--navy));bord
 
 /* Builder */
 .picker-box{border:1px solid var(--hairline);border-radius:6px;padding:1.15rem;background:var(--surface-subtle);margin-bottom:1.15rem;}
-.picker-row{display:flex;gap:0.5rem;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:0.2rem;}
+.picker-row{display:flex;gap:0.5rem;}
+.picker-row-bottom{margin-top:0.5rem;}
+.picker-row .btn{flex:1 1 0;min-width:0;}
 select,input[type=number],textarea{font-family:inherit;font-size:0.9rem;padding:0.55rem 0.6rem;border:1px solid var(--hairline);border-radius:3px;background:#fff;color:var(--ink);}
-.btn{font-family:inherit;font-size:0.85rem;font-weight:600;padding:0.55rem 0.9rem;border-radius:3px;border:none;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.btn{font-family:inherit;font-size:0.85rem;font-weight:600;padding:0.55rem 0.9rem;border-radius:3px;border:none;cursor:pointer;white-space:nowrap;text-align:center;}
 .btn-primary{background:var(--navy);color:#fff;}
 .btn-primary:hover{background:var(--navy-active);}
+.btn-orange{background:var(--brand-orange);color:#fff;}
+.btn-orange:hover{background:#CB6015;}
 .btn-ghost{background:#fff;border:1px solid var(--hairline);color:var(--body);}
 .btn-ghost:hover{background:var(--surface-soft);}
 @media(max-width:700px){
-  .btn{font-size:0.72rem;padding:0.45rem 0.6rem;}
+  .btn{font-size:0.72rem;padding:0.45rem 0.5rem;}
 }
 @media(max-width:400px){
-  .btn{font-size:0.66rem;padding:0.4rem 0.5rem;}
+  .btn{font-size:0.64rem;padding:0.4rem 0.35rem;}
 }
 
 .table-scroll{overflow-x:auto;}
@@ -157,37 +161,37 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
   @page{ margin:14mm 13mm; }
   *{box-shadow:none !important;}
   body{font-size:11px;line-height:1.45;color:var(--body-strong);}
-  header.mast{background:var(--navy) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding-bottom:0.5rem;border-bottom:3px solid var(--gold) !important;}
+  header.mast{background:var(--gold-deep) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding-bottom:0.5rem;border-bottom:3px solid var(--navy-deep) !important;}
   .mast-inner{padding:0.7rem 0;gap:0.22rem;}
-  .mast-line1{font-size:1.75rem;letter-spacing:0.3px;}
+  .mast-line1{font-size:1.75rem;letter-spacing:0.3px;color:#fff !important;}
   .mast-line2{font-size:1.32rem;}
   .section{padding:0;}
   .section-rule{display:none;}
 
   /* Proposal title block */
-  .print-overline{display:block;text-align:center;font-size:0.72rem;font-weight:700;letter-spacing:3px;color:var(--gold);margin:1.8rem 0 0.5rem 0;}
-  .print-proposal-title{font-size:1.7rem;font-weight:700;letter-spacing:0.2px;color:var(--navy-deep);margin:0 0 1.6rem 0;position:relative;padding-bottom:0.9rem;}
-  .print-proposal-title::after{content:'';display:block;width:64px;height:3px;background:var(--gold);margin:0.7rem auto 0 auto;}
+  .print-overline{display:block;text-align:center;font-size:0.72rem;font-weight:700;letter-spacing:3px;color:var(--gold-deep);margin:0 0 0.5rem 0;}
+  .print-proposal-title{font-size:1.55rem;font-weight:700;letter-spacing:0.2px;color:var(--gold-deep);margin:0 0 1rem 0;position:relative;padding-bottom:0.8rem;}
+  .print-proposal-title::after{content:'';display:block;width:64px;height:3px;background:var(--gold-deep);margin:0.6rem auto 0 auto;}
 
   /* Table: refined document look */
-  table.port-table{font-size:0.88rem;border:1px solid var(--navy);}
-  table.port-table th{background:var(--navy) !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-weight:700;letter-spacing:0.2px;padding:0.55rem 0.6rem;border-color:var(--navy);}
+  table.port-table{font-size:0.88rem;border:1px solid var(--gold-deep);}
+  table.port-table th{background:var(--gold-deep) !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-weight:700;letter-spacing:0.2px;padding:0.55rem 0.6rem;border-color:var(--gold-deep);}
   table.port-table td{padding:0.5rem 0.6rem;border-color:var(--hairline-soft);}
-  table.port-table tbody tr:nth-child(even) td{background:var(--surface-soft);}
+  table.port-table tbody tr:nth-child(even){background:#FBF6E8;}
   table.port-table th:last-child,table.port-table td:last-child{display:none;}
   #total-bar{display:none !important;}
   .weight-cell{justify-content:flex-end;}
-  .weight-cell input[type=number]{border:none;background:transparent;padding:0;width:auto;text-align:right;color:var(--navy-deep);font-weight:700;font-variant-numeric:tabular-nums;-moz-appearance:textfield;}
+  .weight-cell input[type=number]{border:none;background:transparent;padding:0;width:auto;text-align:right;color:var(--gold-deep);font-weight:700;font-variant-numeric:tabular-nums;-moz-appearance:textfield;}
   .weight-cell input[type=number]::-webkit-outer-spin-button,
   .weight-cell input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
-  .weight-cell span{color:var(--navy-deep);font-weight:700;}
+  .weight-cell span{color:var(--gold-deep);font-weight:700;}
 
   /* Comment cards: premium note style */
   .comment-box{margin-top:1.3rem;border:none;box-shadow:none;}
-  .comment-block{padding:0.7rem 0 0.7rem 0.9rem;border-left:3px solid var(--gold);border-top:none !important;}
+  .comment-block{padding:0.7rem 0 0.7rem 0.9rem;border-left:3px solid var(--gold-deep);border-top:none !important;}
   .comment-block + .comment-block{margin-top:0.8rem;}
   .comment-block textarea{min-height:2.6rem;font-size:0.82rem;border:none;padding:0;resize:none;color:var(--body-strong);}
-  .comment-label{font-size:0.68rem;font-weight:700;letter-spacing:0.6px;margin-bottom:0.35rem;}
+  .comment-label{font-size:0.68rem;font-weight:700;letter-spacing:0.6px;margin-bottom:0.35rem;color:var(--gold-deep);}
 
   .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:center;margin-top:1rem;padding-top:0.6rem;border-top:1px solid var(--hairline-soft);}
 }
@@ -210,8 +214,6 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
     <h2 class="section-title screen-only">위험성향별 추천 포트폴리오</h2>
     <p class="section-sub screen-only">고객 성향에 맞는 카드를 선택하면 아래 빌더에 추천 비중이 자동으로 채워집니다. 이후 자유롭게 종목·비중을 수정할 수 있습니다.</p>
     <div class="risk-grid screen-only" id="risk-grid"></div>
-    <div class="print-overline print-only">PORTFOLIO PROPOSAL</div>
-    <h1 class="print-proposal-title print-only" id="print-proposal-title">고객님을 위한 ETF포트폴리오 제안</h1>
   </section>
 
   <section class="section">
@@ -227,10 +229,15 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
         <button class="btn btn-primary" id="add-btn">자산배분ETF 추가</button>
         <button class="btn btn-primary" id="add-general-btn">일반ETF 추가</button>
         <button class="btn btn-primary" id="add-cash-btn">현금성자산 추가</button>
-        <button class="btn btn-ghost" id="clear-btn">전체 삭제</button>
-        <button class="btn btn-ghost" id="print-btn">PDF 저장</button>
+      </div>
+      <div class="picker-row picker-row-bottom">
+        <button class="btn btn-orange" id="clear-btn">전체 삭제</button>
+        <button class="btn btn-orange" id="print-btn">PDF 저장</button>
       </div>
     </div>
+
+    <div class="print-overline print-only">PORTFOLIO PROPOSAL</div>
+    <h1 class="print-proposal-title print-only" id="print-proposal-title">고객님을 위한 ETF포트폴리오 제안</h1>
 
     <div class="total-bar" id="total-bar">
       <span>합계 비중</span>
