@@ -78,15 +78,19 @@ select,input[type=number],textarea{font-family:inherit;font-size:0.9rem;padding:
 .btn-primary:hover{background:var(--navy-active);}
 .btn-orange{background:var(--brand-orange);color:#fff;}
 .btn-orange:hover{background:#CB6015;}
+.btn-red{background:#C62828;color:#fff;}
+.btn-red:hover{background:#A32020;}
+.export-actions{display:flex;gap:0.6rem;margin-bottom:1.2rem;}
+.export-actions .btn{flex:1 1 0;padding:0.85rem 0.9rem;}
 .btn-ghost{background:#fff;border:1px solid var(--hairline);color:var(--body);}
 .btn-ghost:hover{background:var(--surface-soft);}
 @media(max-width:700px){
   .btn{font-size:0.72rem;padding:0.45rem 0.5rem;}
-  .picker-row-top .btn, .picker-row-bottom .btn{padding:0.7rem 0.5rem;}
+  .picker-row-top .btn, .picker-row-bottom .btn, .export-actions .btn{padding:0.7rem 0.5rem;}
 }
 @media(max-width:400px){
   .btn{font-size:0.64rem;padding:0.4rem 0.35rem;}
-  .picker-row-top .btn, .picker-row-bottom .btn{padding:0.62rem 0.35rem;}
+  .picker-row-top .btn, .picker-row-bottom .btn, .export-actions .btn{padding:0.62rem 0.35rem;}
 }
 
 .table-scroll{overflow-x:auto;}
@@ -250,11 +254,7 @@ body.print-mode .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:
         <button class="btn btn-primary" id="add-btn">자산배분ETF 추가</button>
         <button class="btn btn-primary" id="add-general-btn">일반ETF 추가</button>
         <button class="btn btn-primary" id="add-cash-btn">현금성자산 추가</button>
-      </div>
-      <div class="picker-row picker-row-bottom">
-        <button class="btn btn-orange" id="clear-btn">전체 삭제</button>
-        <button class="btn btn-orange" id="print-btn">PDF로 만들기</button>
-        <button class="btn btn-orange" id="image-btn">이미지로 만들기</button>
+        <button class="btn btn-red" id="clear-btn">전체 삭제</button>
       </div>
     </div>
 
@@ -296,6 +296,10 @@ body.print-mode .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:
 
 <footer class="screen-only">
   <div class="wrap">
+    <div class="export-actions">
+      <button class="btn btn-orange" id="print-btn">PDF파일로 만들기</button>
+      <button class="btn btn-orange" id="image-btn">이미지파일로 만들기</button>
+    </div>
     <p class="disclaimer">본 화면의 추천 비중 및 구성 코멘트는 예시 자료이며 특정 상품에 대한 투자 권유 또는 투자자문이 아닙니다. 실제 배분은 고객의 투자목적, 재무상황, 위험감수능력을 종합적으로 고려하여 담당 프라이빗뱅커(PB)와 상담 후 결정하시기 바랍니다. 과거 수익률은 미래 수익을 보장하지 않으며, 투자원금 손실이 발생할 수 있습니다.</p>
   </div>
 </footer>
