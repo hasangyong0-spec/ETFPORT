@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 <style>
 :root{
   --navy:#043B72; --navy-deep:#03294F; --navy-active:#022238;
@@ -52,40 +51,42 @@ header.mast{background:linear-gradient(135deg,var(--navy-deep),var(--navy));bord
 .risk-card{border:1.5px solid var(--brand-orange);border-radius:6px;padding:1.2rem;background:#fff;cursor:pointer;text-align:center;transition:.15s;flex:1 1 0;min-width:0;}
 .risk-card:hover{box-shadow:0 3px 12px rgba(245,130,32,0.18);}
 .risk-card.active{background:#FFF3E9;box-shadow:inset 0 0 0 1.5px var(--brand-orange);}
-.risk-card .rname{font-size:1.08rem;font-weight:700;color:var(--brand-orange);margin-bottom:0.3rem;}
+.risk-card .rname{font-size:1.28rem;font-weight:700;color:var(--brand-orange);margin-bottom:0.3rem;}
 .risk-card .rdesc{font-size:0.85rem;color:var(--muted);line-height:1.55;}
 @media(max-width:700px){
   .risk-card{padding:0.65rem 0.5rem;}
-  .risk-card .rname{font-size:0.82rem;margin-bottom:0.15rem;}
+  .risk-card .rname{font-size:0.95rem;margin-bottom:0.15rem;}
   .risk-card .rdesc{font-size:0.66rem;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 }
 @media(max-width:400px){
   .risk-card{padding:0.55rem 0.4rem;}
-  .risk-card .rname{font-size:0.74rem;}
+  .risk-card .rname{font-size:0.86rem;}
   .risk-card .rdesc{display:none;}
 }
 
 /* Builder */
-.builder-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:1.8rem;align-items:start;}
-@media(max-width:900px){.builder-grid{grid-template-columns:1fr;}}
 .picker-box{border:1px solid var(--hairline);border-radius:6px;padding:1.15rem;background:var(--surface-subtle);margin-bottom:1.15rem;}
-.picker-row{display:flex;gap:0.6rem;flex-wrap:wrap;}
+.picker-row{display:flex;gap:0.5rem;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:0.2rem;}
 select,input[type=number],textarea{font-family:inherit;font-size:0.9rem;padding:0.55rem 0.6rem;border:1px solid var(--hairline);border-radius:3px;background:#fff;color:var(--ink);}
-select{flex:1;min-width:170px;}
-.btn{font-family:inherit;font-size:0.9rem;font-weight:600;padding:0.55rem 1.1rem;border-radius:3px;border:none;cursor:pointer;}
+.btn{font-family:inherit;font-size:0.85rem;font-weight:600;padding:0.55rem 0.9rem;border-radius:3px;border:none;cursor:pointer;white-space:nowrap;flex-shrink:0;}
 .btn-primary{background:var(--navy);color:#fff;}
 .btn-primary:hover{background:var(--navy-active);}
 .btn-ghost{background:#fff;border:1px solid var(--hairline);color:var(--body);}
 .btn-ghost:hover{background:var(--surface-soft);}
+@media(max-width:700px){
+  .btn{font-size:0.72rem;padding:0.45rem 0.6rem;}
+}
+@media(max-width:400px){
+  .btn{font-size:0.66rem;padding:0.4rem 0.5rem;}
+}
 
 .table-scroll{overflow-x:auto;}
-table.port-table{width:100%;border-collapse:collapse;font-size:0.88rem;min-width:480px;}
+table.port-table{width:100%;border-collapse:collapse;font-size:0.88rem;min-width:420px;}
 table.port-table th{background:var(--sky-soft);color:var(--navy-deep);font-weight:700;text-align:left;padding:0.6rem 0.7rem;border:1px solid var(--hairline);white-space:nowrap;}
 table.port-table td{padding:0.55rem 0.7rem;border:1px solid var(--hairline-soft);vertical-align:middle;}
 table.port-table tr:hover td{background:var(--surface-subtle);}
-.weight-cell{display:flex;align-items:center;gap:0.5rem;min-width:150px;}
-.weight-cell input[type=range]{flex:1;accent-color:var(--navy);}
-.weight-cell input[type=number]{width:3.6rem;text-align:right;font-variant-numeric:tabular-nums;}
+.weight-cell{display:flex;align-items:center;gap:0.4rem;}
+.weight-cell input[type=number]{width:4.4rem;text-align:right;font-variant-numeric:tabular-nums;}
 .remove-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.15rem;line-height:1;padding:0.1rem 0.4rem;}
 .remove-btn:hover{color:#C62828;}
 .ticker-tag{font-size:0.75rem;color:var(--muted);font-variant-numeric:tabular-nums;}
@@ -93,12 +94,6 @@ table.port-table tr:hover td{background:var(--surface-subtle);}
 .total-bar{display:flex;justify-content:space-between;align-items:center;padding:0.85rem 1rem;border-radius:5px;margin-bottom:0.9rem;font-weight:700;font-size:0.98rem;}
 .total-ok{background:#EAF4EC;color:var(--success);}
 .total-warn{background:#FBF1DD;color:var(--warning);}
-
-.summary-box{border:1px solid var(--hairline);border-radius:6px;padding:1.2rem;background:#fff;}
-.summary-box h3{font-size:1.02rem;font-weight:700;margin:0 0 1rem 0;color:var(--navy-deep);}
-.legend-row{display:flex;justify-content:space-between;font-size:0.86rem;padding:0.4rem 0;border-bottom:1px solid var(--hairline-soft);}
-.legend-row .dot{display:inline-block;width:0.6rem;height:0.6rem;border-radius:2px;margin-right:0.5rem;vertical-align:middle;}
-.legend-row .val{font-variant-numeric:tabular-nums;font-weight:600;}
 
 .empty-msg{color:var(--muted-soft);font-size:0.92rem;padding:1.6rem 0;text-align:center;}
 
@@ -159,40 +154,31 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
 
   <section class="section">
     <div class="section-rule"></div>
-    <h2 class="section-title">포트폴리오 만들기</h2>
-    <p class="section-sub">'ETF 추가' 버튼을 눌러 자산배분 ETF 리스트에서 종목을 선택하고, 슬라이더로 비중을 조절하세요.</p>
+    <h2 class="section-title">ETF포트폴리오 만들기</h2>
+    <p class="section-sub">'자산배분ETF 추가'로 리스트에서 선택하거나, '일반ETF 추가'로 이름을 직접 입력해 담고, 비중은 숫자로 입력하세요.</p>
 
     <div class="picker-box">
       <div class="picker-row">
-        <button class="btn btn-primary" id="add-btn">+ ETF 추가</button>
+        <button class="btn btn-primary" id="add-btn">자산배분ETF 추가</button>
+        <button class="btn btn-primary" id="add-general-btn">일반ETF 추가</button>
         <button class="btn btn-ghost" id="clear-btn">전체 삭제</button>
-        <button class="btn btn-ghost" id="print-btn">인쇄 / PDF 저장</button>
+        <button class="btn btn-ghost" id="print-btn">PDF 저장</button>
       </div>
     </div>
 
-    <div class="builder-grid">
-      <div>
-        <div class="total-bar" id="total-bar">
-          <span>합계 비중</span>
-          <span id="total-val">0%</span>
-        </div>
-        <div class="table-scroll">
-          <table class="port-table" id="port-table">
-            <thead>
-              <tr><th>테마</th><th>ETF명</th><th style="width:190px;">비중</th><th style="width:36px;"></th></tr>
-            </thead>
-            <tbody id="port-tbody"></tbody>
-          </table>
-        </div>
-        <div class="empty-msg" id="empty-msg">아직 추가된 ETF가 없습니다. 위 카드를 선택하거나 직접 추가해 보세요.</div>
-      </div>
-
-      <div class="summary-box">
-        <h3>자산군별 비중</h3>
-        <canvas id="donut-chart" height="220"></canvas>
-        <div id="legend-list" style="margin-top:1rem;"></div>
-      </div>
+    <div class="total-bar" id="total-bar">
+      <span>합계 비중</span>
+      <span id="total-val">0%</span>
     </div>
+    <div class="table-scroll">
+      <table class="port-table" id="port-table">
+        <thead>
+          <tr><th>테마</th><th>ETF명</th><th style="width:110px;">비중</th><th style="width:36px;"></th></tr>
+        </thead>
+        <tbody id="port-tbody"></tbody>
+      </table>
+    </div>
+    <div class="empty-msg" id="empty-msg">아직 추가된 ETF가 없습니다. 위 카드를 선택하거나 직접 추가해 보세요.</div>
 
     <div class="comment-box">
       <div class="comment-block">
@@ -237,10 +223,11 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
 <script>
 /* ---------- Data ---------- */
 const ASSET_CLASSES = {
-  dom_equity:{ko:'국내주식',color:'#043B72'},
-  global_equity:{ko:'해외주식',color:'#4C7EA8'},
-  bond:{ko:'채권',color:'#7FA8C9'},
-  alt:{ko:'대체자산(금)',color:'#C9A227'}
+  dom_equity:{ko:'국내주식'},
+  global_equity:{ko:'해외주식'},
+  bond:{ko:'채권'},
+  alt:{ko:'대체자산(금)'},
+  other:{ko:'직접입력 종목'}
 };
 
 /* 구분(grp) 순서 = 사내한 "자산배분 ETF 리스트" 원문 순서: 지수/지역 → 글로벌테마 → 자산배분 → 원자재 → 국내주식형(신설) */
@@ -333,7 +320,6 @@ const PRESETS = {
 let activePreset = null;
 let portfolio = [];
 const etfByTicker = Object.fromEntries(ETF_LIST.map(e=>[e.t,e]));
-let donutChart = null;
 
 /* ---------- Risk cards ---------- */
 function renderRiskCards(){
@@ -360,6 +346,14 @@ function loadPreset(key){
 
 /* ---------- Theme/ETF pickers (now via modal) ---------- */
 document.getElementById('add-btn').onclick = ()=>openModal('add');
+document.getElementById('add-general-btn').onclick = ()=>{
+  const name = window.prompt('추가할 ETF명을 입력하세요.');
+  if(!name || !name.trim()) return;
+  activePreset = null;
+  renderRiskCards();
+  portfolio.push({t:'', n:name.trim(), th:'직접입력', a:'other', w:0});
+  renderPortfolio();
+};
 document.getElementById('clear-btn').onclick = ()=>{
   portfolio = []; activePreset = null;
   renderRiskCards(); renderPortfolio();
@@ -433,10 +427,9 @@ function renderPortfolio(){
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${row.th}</td>
-      <td>${row.n} <span class="ticker-tag">${row.t}</span></td>
+      <td>${row.n}${row.t?` <span class="ticker-tag">${row.t}</span>`:''}</td>
       <td>
         <div class="weight-cell">
-          <input type="range" min="0" max="100" step="1" value="${row.w}" data-idx="${idx}" class="w-range">
           <input type="number" min="0" max="100" step="1" value="${row.w}" data-idx="${idx}" class="w-number">
           <span>%</span>
         </div>
@@ -446,11 +439,8 @@ function renderPortfolio(){
     tbody.appendChild(tr);
   });
 
-  tbody.querySelectorAll('.w-range').forEach(el=>{
-    el.oninput = (e)=>{ const i=+e.target.dataset.idx; portfolio[i].w = +e.target.value; syncWeightInputs(i); updateTotals(); };
-  });
   tbody.querySelectorAll('.w-number').forEach(el=>{
-    el.oninput = (e)=>{ let v=Math.max(0,Math.min(100,+e.target.value||0)); const i=+e.target.dataset.idx; portfolio[i].w=v; syncWeightInputs(i); updateTotals(); };
+    el.oninput = (e)=>{ let v=Math.max(0,Math.min(100,+e.target.value||0)); const i=+e.target.dataset.idx; portfolio[i].w=v; updateTotals(); };
   });
   tbody.querySelectorAll('.remove-btn').forEach(el=>{
     el.onclick = (e)=>{ const i=+e.target.dataset.idx; portfolio.splice(i,1); activePreset=null; renderRiskCards(); renderPortfolio(); };
@@ -458,43 +448,17 @@ function renderPortfolio(){
 
   updateTotals();
 }
-function syncWeightInputs(i){
-  document.querySelectorAll(`.w-range[data-idx="${i}"]`).forEach(el=>el.value=portfolio[i].w);
-  document.querySelectorAll(`.w-number[data-idx="${i}"]`).forEach(el=>el.value=portfolio[i].w);
-}
 function updateTotals(){
   const total = portfolio.reduce((s,p)=>s+p.w,0);
   const bar = document.getElementById('total-bar');
   document.getElementById('total-val').textContent = total + '%';
   bar.classList.toggle('total-ok', total===100);
   bar.classList.toggle('total-warn', total!==100);
-  updateChart();
   updateRationale();
 }
-function updateChart(){
-  const totals = {dom_equity:0, global_equity:0, bond:0, alt:0};
-  portfolio.forEach(p=>{ totals[p.a] += p.w; });
-  const labels = Object.keys(ASSET_CLASSES).map(k=>ASSET_CLASSES[k].ko);
-  const data = Object.keys(ASSET_CLASSES).map(k=>totals[k]);
-  const colors = Object.keys(ASSET_CLASSES).map(k=>ASSET_CLASSES[k].color);
-
-  const ctx = document.getElementById('donut-chart').getContext('2d');
-  if(donutChart) donutChart.destroy();
-  donutChart = new Chart(ctx, {
-    type:'doughnut',
-    data:{ labels, datasets:[{ data, backgroundColor:colors, borderColor:'#fff', borderWidth:2 }] },
-    options:{ plugins:{ legend:{ display:false } }, cutout:'62%' }
-  });
-
-  const legendList = document.getElementById('legend-list');
-  legendList.innerHTML='';
-  Object.keys(ASSET_CLASSES).forEach(k=>{
-    const c = ASSET_CLASSES[k];
-    const row = document.createElement('div');
-    row.className='legend-row';
-    row.innerHTML = `<span><span class="dot" style="background:${c.color}"></span>${c.ko}</span><span class="val">${totals[k]}%</span>`;
-    legendList.appendChild(row);
-  });
+function computeAssetTotals(){
+  const totals = {dom_equity:0, global_equity:0, bond:0, alt:0, other:0};
+  portfolio.forEach(p=>{ totals[p.a] = (totals[p.a]||0) + p.w; });
   return totals;
 }
 
@@ -506,9 +470,8 @@ function updateRationale(){
     return;
   }
   const total = portfolio.reduce((s,p)=>s+p.w,0) || 1;
-  const totals = {dom_equity:0, global_equity:0, bond:0, alt:0};
-  portfolio.forEach(p=>{ totals[p.a]+=p.w; });
-  const pct = k => Math.round((totals[k]/total)*100);
+  const totals = computeAssetTotals();
+  const pct = k => Math.round(((totals[k]||0)/total)*100);
 
   const themeWeights = {};
   portfolio.forEach(p=>{ themeWeights[p.th] = (themeWeights[p.th]||0) + p.w; });
