@@ -31,11 +31,15 @@ body{margin:0;font-family:var(--font-kr);color:var(--body);background:var(--canv
 /* Header */
 header.mast{background:linear-gradient(135deg,var(--navy-deep),var(--navy));border-bottom:2px solid var(--gold);}
 .mast-inner{display:flex;justify-content:space-between;align-items:center;padding:1.3rem 0;flex-wrap:wrap;gap:0.8rem;}
-.mast-title{font-size:1.85rem;font-weight:700;color:#fff;letter-spacing:0.2px;line-height:1.3;}
+.mast-title{font-size:1.85rem;font-weight:700;color:#fff;letter-spacing:0.2px;line-height:1.35;}
 .mt-orange{color:var(--brand-orange);}
+.mt-sub{display:inline;}
 .mt-small{font-size:0.6em;font-weight:600;opacity:0.88;margin-left:0.1em;}
-@media(max-width:560px){ .mast-title{font-size:1.45rem;} }
-.menu-btn{font-family:inherit;font-size:0.85rem;font-weight:600;padding:0.55rem 1rem;border-radius:3px;border:1px solid rgba(255,255,255,0.35);background:rgba(255,255,255,0.08);color:#fff;cursor:pointer;white-space:nowrap;}
+@media(max-width:560px){
+  .mast-title{font-size:1.4rem;}
+  .mt-sub{display:block;margin-top:0.25rem;}
+}
+.menu-btn{font-family:inherit;font-size:0.75rem;font-weight:600;padding:0.4rem 0.75rem;border-radius:3px;border:1px solid rgba(255,255,255,0.35);background:rgba(255,255,255,0.08);color:#fff;cursor:pointer;white-space:nowrap;flex-shrink:0;}
 .menu-btn:hover{background:rgba(255,255,255,0.18);}
 
 /* Section */
@@ -45,9 +49,12 @@ header.mast{background:linear-gradient(135deg,var(--navy-deep),var(--navy));bord
 .section-sub{font-size:0.92rem;color:var(--muted);margin:0 0 1.6rem 0;}
 
 /* Risk cards */
-.risk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.9rem;}
-@media(max-width:700px){.risk-grid{grid-template-columns:1fr;}}
-.risk-card{border:1px solid var(--hairline);border-radius:6px;padding:1.2rem;background:#fff;cursor:pointer;text-align:left;transition:.15s;}
+.risk-grid{display:flex;gap:0.7rem;}
+@media(max-width:700px){
+  .risk-grid{overflow-x:auto;padding-bottom:0.4rem;-webkit-overflow-scrolling:touch;}
+  .risk-card{min-width:9.5rem;}
+}
+.risk-card{border:1px solid var(--hairline);border-radius:6px;padding:1.2rem;background:#fff;cursor:pointer;text-align:left;transition:.15s;flex:1 1 0;}
 .risk-card:hover{border-color:var(--navy);box-shadow:0 3px 12px rgba(4,59,114,0.08);}
 .risk-card.active{border-color:var(--navy);background:var(--surface-soft);box-shadow:inset 0 0 0 1.5px var(--navy);}
 .risk-card .rname{font-size:1.08rem;font-weight:700;color:var(--navy-deep);margin-bottom:0.3rem;}
@@ -115,6 +122,10 @@ table.full-list td{padding:0.5rem 0.7rem;border-bottom:1px solid var(--hairline-
 table.full-list tr:hover td{background:var(--surface-subtle);}
 .group-header-row td{background:var(--navy);color:#fff;font-weight:700;padding:0.5rem 0.7rem;}
 .group-header-row:hover td{background:var(--navy);}
+tr.pickable{cursor:pointer;}
+tr.pickable:hover td{background:var(--sky-soft);}
+tr.picked td{background:#EAF4EC !important;color:var(--muted);}
+.picked-tag{font-size:0.72rem;color:var(--success);font-weight:700;margin-left:0.4rem;}
 
 footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
 .disclaimer{font-size:0.72rem;color:var(--muted-soft);line-height:1.65;}
@@ -126,7 +137,7 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
 
 <header class="mast">
   <div class="wrap mast-inner">
-    <div class="mast-title"><span class="mt-orange">미래에셋증권 투자센터대구WM</span> ETF포트폴리오<span class="mt-small">(연금,IRP,ISA)</span></div>
+    <div class="mast-title"><span class="mt-orange">미래에셋증권 투자센터대구WM</span><span class="mt-sub"> ETF포트폴리오<span class="mt-small">(연금,IRP,ISA)</span></span></div>
     <button class="menu-btn" id="open-list-btn">자산배분 ETF 리스트</button>
   </div>
 </header>
@@ -142,14 +153,12 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
 
   <section class="section">
     <div class="section-rule"></div>
-    <h2 class="section-title">포트폴리오 직접 구성</h2>
-    <p class="section-sub">테마와 ETF를 선택해 추가하고, 슬라이더로 비중을 조절하세요.</p>
+    <h2 class="section-title">포트폴리오 만들기</h2>
+    <p class="section-sub">'ETF 추가' 버튼을 눌러 자산배분 ETF 리스트에서 종목을 선택하고, 슬라이더로 비중을 조절하세요.</p>
 
     <div class="picker-box">
       <div class="picker-row">
-        <select id="theme-select"></select>
-        <select id="etf-select"></select>
-        <button class="btn btn-primary" id="add-btn">추가</button>
+        <button class="btn btn-primary" id="add-btn">+ ETF 추가</button>
         <button class="btn btn-ghost" id="clear-btn">전체 삭제</button>
         <button class="btn btn-ghost" id="print-btn">인쇄 / PDF 저장</button>
       </div>
@@ -203,15 +212,18 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
 <div class="modal-backdrop" id="list-modal">
   <div class="modal-box">
     <div class="modal-head">
-      <h3>자산배분 ETF 리스트</h3>
+      <h3 id="modal-title">자산배분 ETF 리스트</h3>
       <button class="modal-close" id="close-list-btn">&times;</button>
     </div>
-    <p style="font-size:0.78rem;color:var(--muted-soft);margin:-0.6rem 0 1rem 0;">자료: 자산배분 ETF 리스트(사내한, 2026.09.03 기준) · 국내상장 ETF 60종목 — 홍콩상장 등 해외상장 종목은 별도 자료 확인 시 추가 반영됩니다.</p>
+    <p id="modal-sub" style="font-size:0.78rem;color:var(--muted-soft);margin:-0.6rem 0 1rem 0;">자료: 자산배분 ETF 리스트(사내한, 2026.09.03 기준) · 국내상장 ETF 60종목 — 홍콩상장 등 해외상장 종목은 별도 자료 확인 시 추가 반영됩니다.</p>
     <div class="modal-table-wrap">
       <table class="full-list">
         <thead><tr><th style="width:2.6rem;">No.</th><th>테마</th><th>Ticker</th><th>ETF명</th></tr></thead>
         <tbody id="full-list-tbody"></tbody>
       </table>
+    </div>
+    <div id="modal-footer" style="display:none;margin-top:1rem;text-align:right;">
+      <button class="btn btn-primary" id="modal-done-btn">완료</button>
     </div>
   </div>
 </div>
@@ -340,51 +352,34 @@ function loadPreset(key){
   renderPortfolio();
 }
 
-/* ---------- Theme/ETF pickers ---------- */
-function renderThemeSelect(){
-  const themeSel = document.getElementById('theme-select');
-  themeSel.innerHTML='';
-  GROUPS_ORDER.forEach(grp=>{
-    const themes = [...new Set(ETF_LIST.filter(e=>e.grp===grp).map(e=>e.th))];
-    if(!themes.length) return;
-    const og = document.createElement('optgroup');
-    og.label = grp;
-    themes.forEach(th=>{
-      const opt = document.createElement('option');
-      opt.value = th; opt.textContent = th;
-      og.appendChild(opt);
-    });
-    themeSel.appendChild(og);
-  });
-  themeSel.onchange = renderEtfSelect;
-  renderEtfSelect();
-}
-function renderEtfSelect(){
-  const theme = document.getElementById('theme-select').value;
-  const etfSel = document.getElementById('etf-select');
-  etfSel.innerHTML='';
-  ETF_LIST.filter(e=>e.th===theme).forEach(e=>{
-    const opt = document.createElement('option');
-    opt.value = e.t; opt.textContent = `${e.n} (${e.t})`;
-    etfSel.appendChild(opt);
-  });
-}
-document.getElementById('add-btn').onclick = ()=>{
-  const ticker = document.getElementById('etf-select').value;
-  if(!ticker || portfolio.some(p=>p.t===ticker)) return;
-  const e = etfByTicker[ticker];
-  activePreset = null;
-  renderRiskCards();
-  portfolio.push({t:e.t,n:e.n,th:e.th,a:e.a,w:0});
-  renderPortfolio();
-};
+/* ---------- Theme/ETF pickers (now via modal) ---------- */
+document.getElementById('add-btn').onclick = ()=>openModal('add');
 document.getElementById('clear-btn').onclick = ()=>{
   portfolio = []; activePreset = null;
   renderRiskCards(); renderPortfolio();
 };
 document.getElementById('print-btn').onclick = ()=>window.print();
 
-/* ---------- Full list modal ---------- */
+/* ---------- List modal (view mode from header / add mode from builder) ---------- */
+let modalMode = 'view';
+function openModal(mode){
+  modalMode = mode;
+  document.getElementById('modal-title').textContent = mode==='add' ? 'ETF 추가하기' : '자산배분 ETF 리스트';
+  document.getElementById('modal-sub').style.display = mode==='add' ? 'none' : '';
+  document.getElementById('modal-footer').style.display = mode==='add' ? 'block' : 'none';
+  renderFullListModal();
+  document.getElementById('list-modal').classList.add('open');
+}
+function closeModal(){
+  document.getElementById('list-modal').classList.remove('open');
+}
+document.getElementById('open-list-btn').onclick = ()=>openModal('view');
+document.getElementById('close-list-btn').onclick = closeModal;
+document.getElementById('modal-done-btn').onclick = closeModal;
+document.getElementById('list-modal').onclick = (e)=>{
+  if(e.target.id==='list-modal') closeModal();
+};
+
 function renderFullListModal(){
   const tbody = document.getElementById('full-list-tbody');
   tbody.innerHTML='';
@@ -400,22 +395,25 @@ function renderFullListModal(){
     themes.forEach(th=>{
       groupItems.filter(e=>e.th===th).forEach((e,idx)=>{
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${no++}</td><td>${idx===0?th:''}</td><td>${e.t}</td><td>${e.n}</td>`;
+        const already = portfolio.some(p=>p.t===e.t);
+        if(modalMode==='add'){
+          tr.className = already ? 'picked' : 'pickable';
+        }
+        tr.innerHTML = `<td>${no++}</td><td>${idx===0?th:''}</td><td>${e.t}</td><td>${e.n}${(modalMode==='add' && already)?'<span class="picked-tag">담김</span>':''}</td>`;
+        if(modalMode==='add' && !already){
+          tr.onclick = ()=>{
+            portfolio.push({t:e.t,n:e.n,th:e.th,a:e.a,w:0});
+            activePreset = null;
+            renderRiskCards();
+            renderPortfolio();
+            renderFullListModal();
+          };
+        }
         tbody.appendChild(tr);
       });
     });
   });
 }
-document.getElementById('open-list-btn').onclick = ()=>{
-  renderFullListModal();
-  document.getElementById('list-modal').classList.add('open');
-};
-document.getElementById('close-list-btn').onclick = ()=>{
-  document.getElementById('list-modal').classList.remove('open');
-};
-document.getElementById('list-modal').onclick = (e)=>{
-  if(e.target.id==='list-modal') e.currentTarget.classList.remove('open');
-};
 
 /* ---------- Portfolio table + chart ---------- */
 function renderPortfolio(){
@@ -555,7 +553,6 @@ marketCommentEl.addEventListener('input', ()=>{
 
 /* ---------- Init ---------- */
 renderRiskCards();
-renderThemeSelect();
 renderPortfolio();
 </script>
 </body>
