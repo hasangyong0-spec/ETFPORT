@@ -221,7 +221,7 @@ body.print-mode .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:
     <div class="print-mast-box print-only">
       <div class="print-mast-company">미래에셋증권 투자센터대구WM</div>
       <div class="print-mast-title-wrap">
-        <div class="print-mast-title-line1"><span class="print-mast-name" id="print-mast-name">고객님</span><span class="print-mast-rest">을 위한 ETF포트폴리오</span></div>
+        <div class="print-mast-title-line1"><span class="print-mast-name" id="print-mast-name"></span><span class="print-mast-rest">고객님을 위한 ETF포트폴리오</span></div>
         <div class="print-mast-suffix-line">(개인연금,IRP,ISA)</div>
       </div>
     </div>
@@ -705,7 +705,7 @@ const customerNameEl = document.getElementById('customer-name');
 const printMastNameEl = document.getElementById('print-mast-name');
 function updateCustomerName(){
   const name = customerNameEl.value.trim();
-  printMastNameEl.textContent = name + '고객님';
+  printMastNameEl.textContent = name;
 }
 customerNameEl.addEventListener('input', updateCustomerName);
 updateCustomerName();
