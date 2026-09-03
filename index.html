@@ -31,13 +31,13 @@ body{margin:0;font-family:var(--font-kr);color:var(--body);background:var(--canv
 header.mast{background:linear-gradient(135deg,var(--navy-deep),var(--navy));border-bottom:2px solid var(--gold);}
 .mast-inner{display:flex;flex-direction:column;align-items:center;text-align:center;padding:1.2rem 0;gap:0.35rem;}
 .mast-line1{font-size:2.3rem;font-weight:700;color:var(--brand-orange);letter-spacing:0.2px;line-height:1.25;}
-.mast-line2{font-size:1.65rem;font-weight:700;color:#fff;line-height:1.25;}
+.mast-line2{font-size:1.85rem;font-weight:700;color:#fff;line-height:1.25;}
 .mt-small{font-size:0.6em;font-weight:600;opacity:0.88;margin-left:0.25em;}
 @media(max-width:560px){
   .mast-line1{font-size:1.7rem;}
-  .mast-line2{font-size:1.25rem;}
+  .mast-line2{font-size:1.4rem;}
 }
-.menu-btn{margin-top:0.3rem;font-family:inherit;font-size:0.72rem;font-weight:600;padding:0.22rem 0.55rem;border-radius:3px;border:1px solid rgba(163,214,94,0.5);background:rgba(255,255,255,0.06);color:#A6D65C;cursor:pointer;white-space:nowrap;}
+.menu-btn{margin-top:0.65rem;font-family:inherit;font-size:0.72rem;font-weight:600;padding:0.22rem 0.55rem;border-radius:3px;border:1px solid rgba(163,214,94,0.5);background:rgba(255,255,255,0.06);color:#A6D65C;cursor:pointer;white-space:nowrap;}
 .menu-btn:hover{background:rgba(255,255,255,0.14);}
 
 /* Section */
@@ -131,6 +131,36 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
 .disclaimer{font-size:0.72rem;color:var(--muted-soft);line-height:1.65;}
 
 @media print{ .menu-btn,.picker-box,#print-btn,.modal-backdrop{display:none !important;} }
+
+/* Screen/print variants */
+.print-only{display:none;}
+.customer-input{font:inherit;font-size:inherit;font-weight:inherit;color:var(--brand-orange);border:none;border-bottom:2px solid var(--brand-orange);background:transparent;width:4.2rem;text-align:center;outline:none;padding:0 0.15rem;margin-right:0.15rem;}
+.customer-input:focus{border-bottom-color:var(--navy-active);}
+.print-proposal-title{font-size:1.4rem;font-weight:700;color:var(--navy-deep);text-align:center;margin:0.6rem 0 0.2rem 0;}
+
+@media print{
+  .screen-only{display:none !important;}
+  .print-only{display:block !important;}
+  @page{ margin:12mm; }
+  body{font-size:11px;line-height:1.4;}
+  header.mast{background:var(--navy) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .mast-inner{padding:0.5rem 0;gap:0.15rem;}
+  .mast-line1{font-size:1.25rem;}
+  .mast-line2{font-size:0.95rem;}
+  .section{padding:0.5rem 0;}
+  .section-rule{margin-bottom:0.5rem;}
+  .print-proposal-title{font-size:1.25rem;margin:0.3rem 0 0.5rem 0;}
+  .section-title{font-size:1.05rem;margin-bottom:0.3rem;}
+  table.port-table{font-size:0.78rem;}
+  table.port-table th,table.port-table td{padding:0.3rem 0.45rem;}
+  .total-bar{padding:0.45rem 0.6rem;font-size:0.85rem;margin-bottom:0.5rem;}
+  .comment-box{margin-top:0.6rem;}
+  .comment-block{padding:0.6rem 0.8rem;}
+  .comment-block textarea{min-height:2.8rem;font-size:0.78rem;border:none;padding:0;resize:none;}
+  .comment-label{font-size:0.68rem;margin-bottom:0.3rem;}
+  .rationale-text{font-size:0.8rem;line-height:1.5;}
+  .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:center;margin-top:0.6rem;}
+}
 </style>
 </head>
 <body>
@@ -138,7 +168,7 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
 <header class="mast">
   <div class="wrap mast-inner">
     <div class="mast-line1">미래에셋증권 투자센터대구WM</div>
-    <div class="mast-line2">ETF포트폴리오<span class="mt-small">(연금,IRP,ISA)</span></div>
+    <div class="mast-line2">ETF포트폴리오<span class="mt-small">(개인연금,IRP,ISA)</span></div>
     <button class="menu-btn" id="open-list-btn">자산배분 ETF 리스트 전체보기</button>
   </div>
 </header>
@@ -147,17 +177,21 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
 
   <section class="section">
     <div class="section-rule"></div>
-    <h2 class="section-title">위험성향별 추천 포트폴리오</h2>
-    <p class="section-sub">고객 성향에 맞는 카드를 선택하면 아래 빌더에 추천 비중이 자동으로 채워집니다. 이후 자유롭게 종목·비중을 수정할 수 있습니다.</p>
-    <div class="risk-grid" id="risk-grid"></div>
+    <h2 class="section-title screen-only">위험성향별 추천 포트폴리오</h2>
+    <p class="section-sub screen-only">고객 성향에 맞는 카드를 선택하면 아래 빌더에 추천 비중이 자동으로 채워집니다. 이후 자유롭게 종목·비중을 수정할 수 있습니다.</p>
+    <div class="risk-grid screen-only" id="risk-grid"></div>
+    <h1 class="print-proposal-title print-only" id="print-proposal-title">고객님을 위한 ETF포트폴리오 제안</h1>
   </section>
 
   <section class="section">
     <div class="section-rule"></div>
-    <h2 class="section-title">ETF포트폴리오 만들기</h2>
-    <p class="section-sub">'자산배분ETF 추가'로 리스트에서 선택하거나, '일반ETF 추가'로 이름을 직접 입력해 담고, 비중은 숫자로 입력하세요.</p>
+    <h2 class="section-title screen-only">
+      <input type="text" id="customer-name" class="customer-input" placeholder="OOO" maxlength="12">고객님 ETF포트폴리오 만들기
+    </h2>
+    <h2 class="section-title print-only">ETF포트폴리오</h2>
+    <p class="section-sub screen-only">'자산배분ETF 추가'로 리스트에서 선택하거나, '일반ETF 추가'로 이름을 직접 입력해 담고, 비중은 숫자로 입력하세요.</p>
 
-    <div class="picker-box">
+    <div class="picker-box screen-only">
       <div class="picker-row">
         <button class="btn btn-primary" id="add-btn">자산배분ETF 추가</button>
         <button class="btn btn-primary" id="add-general-btn">일반ETF 추가</button>
@@ -173,18 +207,18 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
     <div class="table-scroll">
       <table class="port-table" id="port-table">
         <thead>
-          <tr><th>테마</th><th>ETF명</th><th style="width:110px;">비중</th><th style="width:36px;"></th></tr>
+          <tr><th>테마</th><th>ETF명</th><th style="width:110px;">비중</th><th style="width:36px;" class="screen-only"></th></tr>
         </thead>
         <tbody id="port-tbody"></tbody>
       </table>
     </div>
-    <div class="empty-msg" id="empty-msg">아직 추가된 ETF가 없습니다. 위 카드를 선택하거나 직접 추가해 보세요.</div>
+    <div class="empty-msg screen-only" id="empty-msg">아직 추가된 ETF가 없습니다. 위 카드를 선택하거나 직접 추가해 보세요.</div>
 
     <div class="comment-box">
       <div class="comment-block">
         <div class="comment-label">최근 시황</div>
         <textarea id="market-comment" placeholder="미팅 전 최근 시황을 간단히 입력하세요. (예: 최근 국내 전력기기·로봇 테마 강세, 미국 나스닥 금리 인하 기대 상승, 금 가격 안전자산 선호 강세 등)"></textarea>
-        <div class="comment-meta">이 내용은 브라우저에 자동 저장되며, 미팅 전 자유롭게 수정할 수 있습니다.</div>
+        <div class="comment-meta screen-only">이 내용은 브라우저에 자동 저장되며, 미팅 전 자유롭게 수정할 수 있습니다.</div>
       </div>
       <div class="comment-block">
         <div class="comment-label">포트폴리오 구성 코멘트</div>
@@ -195,11 +229,13 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
 
 </main>
 
-<footer>
+<footer class="screen-only">
   <div class="wrap">
     <p class="disclaimer">본 화면의 추천 비중 및 구성 코멘트는 예시 자료이며 특정 상품에 대한 투자 권유 또는 투자자문이 아닙니다. 실제 배분은 고객의 투자목적, 재무상황, 위험감수능력을 종합적으로 고려하여 담당 프라이빗뱅커(PB)와 상담 후 결정하시기 바랍니다. 과거 수익률은 미래 수익을 보장하지 않으며, 투자원금 손실이 발생할 수 있습니다.</p>
   </div>
 </footer>
+
+<p class="disclaimer print-only" style="text-align:center;">본 자료는 예시이며 투자 권유·자문이 아닙니다. 투자원금 손실이 발생할 수 있습니다.</p>
 
 <div class="modal-backdrop" id="list-modal">
   <div class="modal-box">
@@ -351,7 +387,7 @@ document.getElementById('add-general-btn').onclick = ()=>{
   if(!name || !name.trim()) return;
   activePreset = null;
   renderRiskCards();
-  portfolio.push({t:'', n:name.trim(), th:'직접입력', a:'other', w:0});
+  portfolio.push({t:'', n:name.trim(), th:'직접입력', a:'other', w:null});
   renderPortfolio();
 };
 document.getElementById('clear-btn').onclick = ()=>{
@@ -402,7 +438,7 @@ function renderFullListModal(){
         tr.innerHTML = `<td>${no++}</td><td>${idx===0?th:''}</td><td>${e.t}</td><td>${e.n}${(modalMode==='add' && already)?'<span class="picked-tag">담김</span>':''}</td>`;
         if(modalMode==='add' && !already){
           tr.onclick = ()=>{
-            portfolio.push({t:e.t,n:e.n,th:e.th,a:e.a,w:0});
+            portfolio.push({t:e.t,n:e.n,th:e.th,a:e.a,w:null});
             activePreset = null;
             renderRiskCards();
             renderPortfolio();
@@ -430,7 +466,7 @@ function renderPortfolio(){
       <td>${row.n}${row.t?` <span class="ticker-tag">${row.t}</span>`:''}</td>
       <td>
         <div class="weight-cell">
-          <input type="number" min="0" max="100" step="1" value="${row.w}" data-idx="${idx}" class="w-number">
+          <input type="number" min="0" max="100" step="1" value="${row.w===null||row.w===undefined?'':row.w}" placeholder="0" data-idx="${idx}" class="w-number">
           <span>%</span>
         </div>
       </td>
@@ -440,7 +476,13 @@ function renderPortfolio(){
   });
 
   tbody.querySelectorAll('.w-number').forEach(el=>{
-    el.oninput = (e)=>{ let v=Math.max(0,Math.min(100,+e.target.value||0)); const i=+e.target.dataset.idx; portfolio[i].w=v; updateTotals(); };
+    el.oninput = (e)=>{
+      const raw = e.target.value;
+      const i = +e.target.dataset.idx;
+      if(raw===''){ portfolio[i].w = null; }
+      else { portfolio[i].w = Math.max(0, Math.min(100, +raw||0)); }
+      updateTotals();
+    };
   });
   tbody.querySelectorAll('.remove-btn').forEach(el=>{
     el.onclick = (e)=>{ const i=+e.target.dataset.idx; portfolio.splice(i,1); activePreset=null; renderRiskCards(); renderPortfolio(); };
@@ -449,7 +491,7 @@ function renderPortfolio(){
   updateTotals();
 }
 function updateTotals(){
-  const total = portfolio.reduce((s,p)=>s+p.w,0);
+  const total = portfolio.reduce((s,p)=>s+(p.w||0),0);
   const bar = document.getElementById('total-bar');
   document.getElementById('total-val').textContent = total + '%';
   bar.classList.toggle('total-ok', total===100);
@@ -458,7 +500,7 @@ function updateTotals(){
 }
 function computeAssetTotals(){
   const totals = {dom_equity:0, global_equity:0, bond:0, alt:0, other:0};
-  portfolio.forEach(p=>{ totals[p.a] = (totals[p.a]||0) + p.w; });
+  portfolio.forEach(p=>{ totals[p.a] = (totals[p.a]||0) + (p.w||0); });
   return totals;
 }
 
@@ -469,12 +511,12 @@ function updateRationale(){
     el.textContent = '포트폴리오를 구성하면 이 종목·비중을 선택한 이유가 여기에 자동으로 표시됩니다.';
     return;
   }
-  const total = portfolio.reduce((s,p)=>s+p.w,0) || 1;
+  const total = portfolio.reduce((s,p)=>s+(p.w||0),0) || 1;
   const totals = computeAssetTotals();
   const pct = k => Math.round(((totals[k]||0)/total)*100);
 
   const themeWeights = {};
-  portfolio.forEach(p=>{ themeWeights[p.th] = (themeWeights[p.th]||0) + p.w; });
+  portfolio.forEach(p=>{ themeWeights[p.th] = (themeWeights[p.th]||0) + (p.w||0); });
   const topThemes = Object.entries(themeWeights).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]);
 
   let sentences = [];
@@ -519,6 +561,16 @@ try{
 marketCommentEl.addEventListener('input', ()=>{
   try{ localStorage.setItem('etf_market_comment', marketCommentEl.value); }catch(e){}
 });
+
+/* ---------- Customer name (screen input -> print proposal title) ---------- */
+const customerNameEl = document.getElementById('customer-name');
+const printProposalTitleEl = document.getElementById('print-proposal-title');
+function updateCustomerName(){
+  const name = customerNameEl.value.trim();
+  printProposalTitleEl.textContent = name ? `${name}고객님을 위한 ETF포트폴리오 제안` : '고객님을 위한 ETF포트폴리오 제안';
+}
+customerNameEl.addEventListener('input', updateCustomerName);
+updateCustomerName();
 
 /* ---------- Init ---------- */
 renderRiskCards();
