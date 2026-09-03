@@ -265,12 +265,12 @@ body.print-mode .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:
       <div class="comment-block">
         <div class="comment-label">최근 시황</div>
         <textarea id="market-comment" placeholder="미팅 전 최근 시황을 간단히 입력하세요. (예: 최근 국내 전력기기·로봇 테마 강세, 미국 나스닥 금리 인하 기대 상승, 금 가격 안전자산 선호 강세 등)"></textarea>
-        <div class="comment-meta screen-only">이 내용은 브라우저에 자동 저장되며, 미팅 전 자유롭게 수정할 수 있습니다.</div>
+        <div class="comment-meta screen-only">이 내용은 저장되지 않으며, 페이지를 새로고침하면 초기화됩니다.</div>
       </div>
       <div class="comment-block">
         <div class="comment-label">포트폴리오 구성 코멘트</div>
         <textarea id="rationale-comment" placeholder="이 포트폴리오를 이렇게 구성한 이유를 직접 입력하세요. (예: 채권·금 비중을 높여 변동성 방어에 무게를 둔 배분입니다 등)"></textarea>
-        <div class="comment-meta screen-only">이 내용은 브라우저에 자동 저장되며, 미팅 전 자유롭게 수정할 수 있습니다.</div>
+        <div class="comment-meta screen-only">이 내용은 저장되지 않으며, 페이지를 새로고침하면 초기화됩니다.</div>
       </div>
     </div>
   </section>
@@ -632,26 +632,6 @@ function updateTotals(){
   bar.classList.toggle('total-ok', total===100);
   bar.classList.toggle('total-warn', total!==100);
 }
-
-/* ---------- Market comment persistence ---------- */
-const marketCommentEl = document.getElementById('market-comment');
-try{
-  const saved = localStorage.getItem('etf_market_comment');
-  if(saved) marketCommentEl.value = saved;
-}catch(e){}
-marketCommentEl.addEventListener('input', ()=>{
-  try{ localStorage.setItem('etf_market_comment', marketCommentEl.value); }catch(e){}
-});
-
-/* ---------- Rationale comment persistence ---------- */
-const rationaleCommentEl = document.getElementById('rationale-comment');
-try{
-  const savedR = localStorage.getItem('etf_rationale_comment');
-  if(savedR) rationaleCommentEl.value = savedR;
-}catch(e){}
-rationaleCommentEl.addEventListener('input', ()=>{
-  try{ localStorage.setItem('etf_rationale_comment', rationaleCommentEl.value); }catch(e){}
-});
 
 /* ---------- Customer name (screen input -> print masthead title) ---------- */
 const customerNameEl = document.getElementById('customer-name');
