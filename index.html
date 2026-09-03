@@ -70,7 +70,7 @@ header.mast{background:linear-gradient(135deg,var(--navy-deep),var(--navy));bord
 .picker-box{border:1px solid var(--hairline);border-radius:6px;padding:1.15rem;background:var(--surface-subtle);margin-bottom:1.15rem;}
 .picker-row{display:flex;gap:0.5rem;}
 .picker-row-bottom{margin-top:0.5rem;}
-.picker-row-top .btn{padding:0.85rem 0.9rem;}
+.picker-row-top .btn, .picker-row-bottom .btn{padding:0.85rem 0.9rem;}
 .picker-row .btn{flex:1 1 0;min-width:0;}
 select,input[type=number],textarea{font-family:inherit;font-size:0.9rem;padding:0.55rem 0.6rem;border:1px solid var(--hairline);border-radius:3px;background:#fff;color:var(--ink);}
 .btn{font-family:inherit;font-size:0.85rem;font-weight:600;padding:0.55rem 0.9rem;border-radius:3px;border:none;cursor:pointer;white-space:nowrap;text-align:center;}
@@ -82,11 +82,11 @@ select,input[type=number],textarea{font-family:inherit;font-size:0.9rem;padding:
 .btn-ghost:hover{background:var(--surface-soft);}
 @media(max-width:700px){
   .btn{font-size:0.72rem;padding:0.45rem 0.5rem;}
-  .picker-row-top .btn{padding:0.7rem 0.5rem;}
+  .picker-row-top .btn, .picker-row-bottom .btn{padding:0.7rem 0.5rem;}
 }
 @media(max-width:400px){
   .btn{font-size:0.64rem;padding:0.4rem 0.35rem;}
-  .picker-row-top .btn{padding:0.62rem 0.35rem;}
+  .picker-row-top .btn, .picker-row-bottom .btn{padding:0.62rem 0.35rem;}
 }
 
 .table-scroll{overflow-x:auto;}
@@ -253,8 +253,8 @@ body.print-mode .disclaimer{font-size:0.6rem;color:var(--muted-soft);text-align:
       </div>
       <div class="picker-row picker-row-bottom">
         <button class="btn btn-orange" id="clear-btn">전체 삭제</button>
-        <button class="btn btn-orange" id="print-btn">PDF 저장</button>
-        <button class="btn btn-orange" id="image-btn">이미지 저장</button>
+        <button class="btn btn-orange" id="print-btn">PDF로 만들기</button>
+        <button class="btn btn-orange" id="image-btn">이미지로 만들기</button>
       </div>
     </div>
 
