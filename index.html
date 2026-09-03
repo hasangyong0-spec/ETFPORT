@@ -142,6 +142,8 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
 .customer-input{font:inherit;font-size:0.72em;font-weight:600;color:var(--input-blue);border:1.5px solid var(--hairline);border-radius:4px;background:#fff;width:7rem;text-align:center;outline:none;padding:0.15rem 0.4rem;margin-right:0.4rem;vertical-align:middle;}
 .customer-input:focus{border-color:var(--input-blue);box-shadow:0 0 0 2px rgba(26,115,232,0.15);}
 .customer-input::placeholder{color:var(--muted-soft);font-weight:500;}
+.heading-line1{display:block;}
+.heading-line2{display:block;margin-top:0.3rem;}
 .print-proposal-title{font-size:1.4rem;font-weight:700;color:var(--navy-deep);text-align:center;margin:0.6rem 0 0.2rem 0;}
 
 @media print{
@@ -192,7 +194,8 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
   <section class="section">
     <div class="section-rule"></div>
     <h2 class="section-title screen-only">
-      <input type="text" id="customer-name" class="customer-input" placeholder="고객명 입력" maxlength="12">고객님 ETF포트폴리오 만들기
+      <span class="heading-line1"><input type="text" id="customer-name" class="customer-input" placeholder="고객명 입력" maxlength="12">고객님</span>
+      <span class="heading-line2">ETF포트폴리오 만들기</span>
     </h2>
     <h2 class="section-title print-only">ETF포트폴리오</h2>
     <p class="section-sub screen-only">'자산배분ETF 추가'로 리스트에서 선택하거나, '일반ETF 추가'로 이름을 직접 입력해 담고, 비중은 숫자로 입력하세요.</p>
