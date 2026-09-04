@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root{
   --navy:#043B72; --navy-deep:#03294F; --navy-active:#022238;
@@ -177,8 +178,8 @@ footer{border-top:1px solid var(--hairline);padding:1.5rem 0;margin-top:1rem;}
 .heading-line2{display:block;margin-top:0.3rem;}
 .print-mast-box{display:none;}
 
-/* print-mode: applied to <body> for real printing (beforeprint/afterprint) and for
-   image-export capture, so both produce an identical one-page layout. */
+/* print-mode: toggled on <body> just before capturing the PDF/image export,
+   so both buttons render the identical one-page layout via html2canvas. */
 body.print-mode .screen-only{display:none !important;}
 body.print-mode .print-only{display:block !important;}
 body.print-mode{font-size:11px;line-height:1.45;color:var(--body-strong);}
@@ -514,16 +515,12 @@ document.getElementById('clear-btn').onclick = ()=>{
   portfolio = []; activePreset = null;
   renderRiskCards(); renderPortfolio();
 };
-document.getElementById('print-btn').onclick = ()=>window.print();
-window.addEventListener('beforeprint', ()=>document.body.classList.add('print-mode'));
-window.addEventListener('afterprint', ()=>document.body.classList.remove('print-mode'));
-
-document.getElementById('image-btn').onclick = async ()=>{
-  const btn = document.getElementById('image-btn');
+/* ---------- Shared capture logic for PDF & image export ----------
+   Both buttons render the exact same one-page layout via html2canvas,
+   avoiding window.print() entirely (unreliable on many mobile browsers/
+   in-app webviews) so both buttons work consistently on every device. */
+async function captureRootCanvas(){
   const root = document.getElementById('capture-root');
-  const originalLabel = btn.textContent;
-  btn.textContent = '이미지 생성 중...';
-  btn.disabled = true;
   document.body.classList.add('print-mode');
   const prevWidth = root.style.width;
   const prevMaxWidth = root.style.maxWidth;
@@ -535,9 +532,66 @@ document.getElementById('image-btn').onclick = async ()=>{
   root.style.margin = '0';
   root.style.padding = '48px 40px 32px 40px';
   root.style.backgroundColor = '#ffffff';
+
+  // Let layout settle at the fixed width before measuring textarea heights
+  await new Promise(r=>setTimeout(r, 60));
+
+  // Auto-expand comment textareas so long text is never clipped/scrolled
+  const textareas = root.querySelectorAll('textarea');
+  const originalHeights = [];
+  textareas.forEach(ta=>{
+    originalHeights.push(ta.style.height);
+    ta.style.height = 'auto';
+    ta.style.height = (ta.scrollHeight + 2) + 'px';
+  });
+
+  await new Promise(r=>setTimeout(r, 60));
+
+  let canvas;
   try{
-    await new Promise(r=>setTimeout(r, 80));
-    const canvas = await html2canvas(root, {scale:2, backgroundColor:'#ffffff', useCORS:true, windowWidth:800});
+    canvas = await html2canvas(root, {scale:2, backgroundColor:'#ffffff', useCORS:true, windowWidth:800});
+  } finally {
+    textareas.forEach((ta,i)=>{ ta.style.height = originalHeights[i]; });
+    document.body.classList.remove('print-mode');
+    root.style.width = prevWidth;
+    root.style.maxWidth = prevMaxWidth;
+    root.style.margin = prevMargin;
+    root.style.padding = prevPadding;
+    root.style.backgroundColor = prevBg;
+  }
+  return canvas;
+}
+
+document.getElementById('print-btn').onclick = async ()=>{
+  const btn = document.getElementById('print-btn');
+  const originalLabel = btn.textContent;
+  btn.textContent = 'PDF 생성 중...';
+  btn.disabled = true;
+  try{
+    const canvas = await captureRootCanvas();
+    const imgData = canvas.toDataURL('image/png');
+    const pxWidth = canvas.width / 2;
+    const pxHeight = canvas.height / 2;
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit:'px', format:[pxWidth, pxHeight], hotfixes:['px_scaling'] });
+    pdf.addImage(imgData, 'PNG', 0, 0, pxWidth, pxHeight);
+    const custName = document.getElementById('customer-name').value.trim();
+    pdf.save((custName ? custName + '_' : '') + 'ETF포트폴리오제안.pdf');
+  }catch(err){
+    alert('PDF 생성 중 오류가 발생했습니다.');
+  }finally{
+    btn.textContent = originalLabel;
+    btn.disabled = false;
+  }
+};
+
+document.getElementById('image-btn').onclick = async ()=>{
+  const btn = document.getElementById('image-btn');
+  const originalLabel = btn.textContent;
+  btn.textContent = '이미지 생성 중...';
+  btn.disabled = true;
+  try{
+    const canvas = await captureRootCanvas();
     const link = document.createElement('a');
     const custName = document.getElementById('customer-name').value.trim();
     link.download = (custName ? custName + '_' : '') + 'ETF포트폴리오제안.png';
@@ -548,12 +602,6 @@ document.getElementById('image-btn').onclick = async ()=>{
   }catch(err){
     alert('이미지 저장 중 오류가 발생했습니다.');
   }finally{
-    document.body.classList.remove('print-mode');
-    root.style.width = prevWidth;
-    root.style.maxWidth = prevMaxWidth;
-    root.style.margin = prevMargin;
-    root.style.padding = prevPadding;
-    root.style.backgroundColor = prevBg;
     btn.textContent = originalLabel;
     btn.disabled = false;
   }
