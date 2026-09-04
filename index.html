@@ -604,8 +604,18 @@ document.getElementById('print-btn').onclick = async ()=>{
     const pxWidth = canvas.width / 2;
     const pxHeight = canvas.height / 2;
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ unit:'px', format:[pxWidth, pxHeight], hotfixes:['px_scaling'] });
-    pdf.addImage(imgData, 'PNG', 0, 0, pxWidth, pxHeight);
+    // Standard A4 page: scale the whole capture down to fit entirely within
+    // one page (no cropping), rather than using a custom oversized page that
+    // some mobile PDF viewers truncate.
+    const pdf = new jsPDF({ unit:'px', format:'a4', hotfixes:['px_scaling'] });
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const fitScale = Math.min(pageWidth / pxWidth, pageHeight / pxHeight);
+    const drawWidth = pxWidth * fitScale;
+    const drawHeight = pxHeight * fitScale;
+    const xOffset = (pageWidth - drawWidth) / 2;
+    const yOffset = (pageHeight - drawHeight) / 2;
+    pdf.addImage(imgData, 'PNG', xOffset, yOffset, drawWidth, drawHeight);
     const custName = document.getElementById('customer-name').value.trim();
     pdf.save((custName ? custName + '_' : '') + 'ETF포트폴리오제안.pdf');
   }catch(err){
