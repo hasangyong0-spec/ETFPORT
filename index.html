@@ -568,10 +568,18 @@ async function captureRootCanvas(){
   await new Promise(r=>setTimeout(r, 60));
 
   const fullHeight = root.scrollHeight;
+  // Mobile browsers cap the maximum canvas size they can allocate (often much
+  // lower than desktop). A tall capture at scale:2 can silently get truncated
+  // at the bottom on those devices, so scale down automatically when needed.
+  const MAX_CANVAS_DIM = 4000;
+  let captureScale = 2;
+  if(fullHeight * captureScale > MAX_CANVAS_DIM){
+    captureScale = Math.max(1, MAX_CANVAS_DIM / fullHeight);
+  }
   let canvas;
   try{
     canvas = await html2canvas(root, {
-      scale:2,
+      scale:captureScale,
       backgroundColor:'#ffffff',
       useCORS:true,
       windowWidth:800,
@@ -590,7 +598,7 @@ async function captureRootCanvas(){
     root.style.backgroundColor = prevBg;
     window.scrollTo(prevScrollX, prevScrollY);
   }
-  return canvas;
+  return { canvas, scale: captureScale };
 }
 
 document.getElementById('print-btn').onclick = async ()=>{
@@ -599,22 +607,25 @@ document.getElementById('print-btn').onclick = async ()=>{
   btn.textContent = 'PDF 생성 중...';
   btn.disabled = true;
   try{
-    const canvas = await captureRootCanvas();
+    const { canvas, scale } = await captureRootCanvas();
     const imgData = canvas.toDataURL('image/png');
-    const pxWidth = canvas.width / 2;
-    const pxHeight = canvas.height / 2;
+    const pxWidth = canvas.width / scale;
+    const pxHeight = canvas.height / scale;
     const { jsPDF } = window.jspdf;
     // Standard A4 page: scale the whole capture down to fit entirely within
     // one page (no cropping), rather than using a custom oversized page that
-    // some mobile PDF viewers truncate.
+    // some mobile PDF viewers truncate. Top-aligned with a small top margin
+    // instead of vertically centered.
     const pdf = new jsPDF({ unit:'px', format:'a4', hotfixes:['px_scaling'] });
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
-    const fitScale = Math.min(pageWidth / pxWidth, pageHeight / pxHeight);
+    const topMargin = pageHeight * 0.035;
+    const availHeight = pageHeight - topMargin;
+    const fitScale = Math.min(pageWidth / pxWidth, availHeight / pxHeight);
     const drawWidth = pxWidth * fitScale;
     const drawHeight = pxHeight * fitScale;
     const xOffset = (pageWidth - drawWidth) / 2;
-    const yOffset = (pageHeight - drawHeight) / 2;
+    const yOffset = topMargin;
     pdf.addImage(imgData, 'PNG', xOffset, yOffset, drawWidth, drawHeight);
     const custName = document.getElementById('customer-name').value.trim();
     pdf.save((custName ? custName + '_' : '') + 'ETF포트폴리오제안.pdf');
@@ -632,7 +643,7 @@ document.getElementById('image-btn').onclick = async ()=>{
   btn.textContent = '이미지 생성 중...';
   btn.disabled = true;
   try{
-    const canvas = await captureRootCanvas();
+    const { canvas } = await captureRootCanvas();
     const link = document.createElement('a');
     const custName = document.getElementById('customer-name').value.trim();
     link.download = (custName ? custName + '_' : '') + 'ETF포트폴리오제안.png';
