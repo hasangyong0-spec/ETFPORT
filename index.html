@@ -521,6 +521,12 @@ document.getElementById('clear-btn').onclick = ()=>{
    in-app webviews) so both buttons work consistently on every device. */
 async function captureRootCanvas(){
   const root = document.getElementById('capture-root');
+
+  // Wait for the web font to finish loading first — if it swaps in mid-measure
+  // (common on slower mobile connections), line-wrapping can shift afterward
+  // and push the last element (the disclaimer) past a height we already locked in.
+  try{ if(document.fonts && document.fonts.ready){ await document.fonts.ready; } }catch(e){}
+
   document.body.classList.add('print-mode');
   const prevWidth = root.style.width;
   const prevMaxWidth = root.style.maxWidth;
@@ -540,7 +546,7 @@ async function captureRootCanvas(){
   window.scrollTo(0, 0);
 
   // Let layout settle at the fixed width before swapping in text clones
-  await new Promise(r=>setTimeout(r, 60));
+  await new Promise(r=>setTimeout(r, 120));
 
   // html2canvas does not reliably wrap text inside <textarea> elements, so for
   // the capture we temporarily replace each one with a plain wrapped <div>
@@ -565,9 +571,13 @@ async function captureRootCanvas(){
     swaps.push({ ta, clone });
   });
 
-  await new Promise(r=>setTimeout(r, 60));
+  // Force layout to flush, then measure with a safety buffer so any last-moment
+  // reflow (fonts, image decode, etc.) never gets cropped off the bottom.
+  void root.offsetHeight;
+  await new Promise(r=>setTimeout(r, 120));
+  void root.offsetHeight;
 
-  const fullHeight = root.scrollHeight;
+  const fullHeight = root.scrollHeight + 24;
   // Mobile browsers cap the maximum canvas size they can allocate (often much
   // lower than desktop). A tall capture at scale:2 can silently get truncated
   // at the bottom on those devices, so scale down automatically when needed.
@@ -583,7 +593,7 @@ async function captureRootCanvas(){
       backgroundColor:'#ffffff',
       useCORS:true,
       windowWidth:800,
-      windowHeight: fullHeight + 40,
+      windowHeight: fullHeight + 60,
       height: fullHeight,
       scrollX: 0,
       scrollY: 0
