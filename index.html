@@ -533,31 +533,62 @@ async function captureRootCanvas(){
   root.style.padding = '48px 40px 32px 40px';
   root.style.backgroundColor = '#ffffff';
 
-  // Let layout settle at the fixed width before measuring textarea heights
+  // Mobile browsers can clip the capture based on current scroll position,
+  // so always start from the very top of the page before measuring/capturing.
+  const prevScrollX = window.scrollX;
+  const prevScrollY = window.scrollY;
+  window.scrollTo(0, 0);
+
+  // Let layout settle at the fixed width before swapping in text clones
   await new Promise(r=>setTimeout(r, 60));
 
-  // Auto-expand comment textareas so long text is never clipped/scrolled
+  // html2canvas does not reliably wrap text inside <textarea> elements, so for
+  // the capture we temporarily replace each one with a plain wrapped <div>
+  // showing the same text, matched to the textarea's own resolved styles.
   const textareas = root.querySelectorAll('textarea');
-  const originalHeights = [];
+  const swaps = [];
   textareas.forEach(ta=>{
-    originalHeights.push(ta.style.height);
-    ta.style.height = 'auto';
-    ta.style.height = (ta.scrollHeight + 2) + 'px';
+    const cs = getComputedStyle(ta);
+    const clone = document.createElement('div');
+    clone.textContent = ta.value;
+    clone.style.font = cs.font;
+    clone.style.fontSize = cs.fontSize;
+    clone.style.lineHeight = cs.lineHeight;
+    clone.style.color = cs.color;
+    clone.style.width = ta.offsetWidth + 'px';
+    clone.style.minHeight = cs.minHeight;
+    clone.style.whiteSpace = 'pre-wrap';
+    clone.style.wordBreak = 'break-word';
+    clone.style.overflowWrap = 'break-word';
+    ta.insertAdjacentElement('afterend', clone);
+    ta.style.display = 'none';
+    swaps.push({ ta, clone });
   });
 
   await new Promise(r=>setTimeout(r, 60));
 
+  const fullHeight = root.scrollHeight;
   let canvas;
   try{
-    canvas = await html2canvas(root, {scale:2, backgroundColor:'#ffffff', useCORS:true, windowWidth:800});
+    canvas = await html2canvas(root, {
+      scale:2,
+      backgroundColor:'#ffffff',
+      useCORS:true,
+      windowWidth:800,
+      windowHeight: fullHeight + 40,
+      height: fullHeight,
+      scrollX: 0,
+      scrollY: 0
+    });
   } finally {
-    textareas.forEach((ta,i)=>{ ta.style.height = originalHeights[i]; });
+    swaps.forEach(({ta, clone})=>{ clone.remove(); ta.style.display = ''; });
     document.body.classList.remove('print-mode');
     root.style.width = prevWidth;
     root.style.maxWidth = prevMaxWidth;
     root.style.margin = prevMargin;
     root.style.padding = prevPadding;
     root.style.backgroundColor = prevBg;
+    window.scrollTo(prevScrollX, prevScrollY);
   }
   return canvas;
 }
